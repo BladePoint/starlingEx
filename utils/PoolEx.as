@@ -1,8 +1,6 @@
 package starlingEx.utils {
 
-	import mx.utils.NameUtil;
-
-	public class Utils {
+	public class PoolEx {
 		static private var arrayV:Vector.<Array> = new <Array>[];
 		static public function getArray():Array {
 			if (arrayV.length == 0) return [];
@@ -40,30 +38,8 @@ package starlingEx.utils {
 			uintV.length = 0;
 			uintVV[uintVV.length] = uintV;
 		}
-		static public function deleteObject(object:Object,recurse:Boolean=true):void {
-			for (var property:String in object) {
-				if (recurse && object[property] is Object) {
-					var nestedObject:Object = object[property] as Object;
-					if (nestedObject.constructor == Object) deleteObject(nestedObject);
-				} 
-				delete object[property];
-			}
-		}
-		static public function getID(object:Object):String {
-			return NameUtil.createUniqueName(object);
-		}
-		static public function nextPowerOfTwo(i:uint):uint {
-			i--;
-			i |= i >> 1;
-			i |= i >> 2;
-			i |= i >> 4;
-			i |= i >> 8;
-			i |= i >> 16;
-			i++;
-			return i;
-		}
 
-		public function Utils() {}
+		public function PoolEx() {}
 
 	}
 
