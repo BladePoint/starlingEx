@@ -16,7 +16,6 @@ package starlingEx.display {
 		public var quadW:Number, quadH:Number;
 		private var trueV:Vector.<ApertureObject>, multV:Vector.<ApertureObject>;
 		private var _apertureLock:Boolean;
-		private var _stepParent:DisplayObjectContainer;
 		public function ApertureQuad(w:Number=1,h:Number=1,colorHex:uint=0xffffff) {
 			quadW = w;
 			quadH = h;
@@ -118,8 +117,7 @@ package starlingEx.display {
 		public function set apertureLock(boolean:Boolean):void {_apertureLock = boolean;}
 		public function get apertureLock():Boolean {return _apertureLock;}
 		public function multiplyColor():void {
-			if (_apertureLock) return;
-			else ApertureUtils.multiplyVertices(this,vertices)
+			ApertureUtils.multiplyVertices(this,vertices)
 		}
 		public function calcMult(parentMultA:Array,index:uint=0):void {
 			if (parentMultA) multV[index].hex = ApertureObject.multiplyRGB(trueV[index],parentMultA);
@@ -127,12 +125,6 @@ package starlingEx.display {
 		}
 		public function applyVertexMult(vertexID:uint):void {
 			super.setVertexColor(vertexID,multV[vertexID].hex);
-		}
-		public function set stepParent(stepDOC:DisplayObjectContainer):void {
-			_stepParent = stepDOC;
-		}
-		public function get stepParent():DisplayObjectContainer {
-			return _stepParent;
 		}
 		override public function set color(value:uint):void {
 			setHex(value);
@@ -159,7 +151,6 @@ package starlingEx.display {
 			}
 			trueV.length = multV.length = 0;
 			trueV = multV = null;
-			_stepParent = null;
 			texture = null;
 			super.dispose();
 		}
