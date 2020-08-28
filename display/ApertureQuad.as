@@ -3,12 +3,12 @@ package starlingEx.display {
 	import starling.display.DisplayObjectContainer;
 	import starling.display.Quad;
 	import starling.utils.Color;
-	import starling.utils.Pool;
 	import starlingEx.display.ApertureObject;
 	import starlingEx.display.ApertureSprite;
 	import starlingEx.display.ApertureUtils;
 	import starlingEx.display.IAperture;
 	import starlingEx.display.IApertureMesh;
+	import starlingEx.utils.Utils;
 
 	public class ApertureQuad extends Quad implements IAperture, IApertureMesh {
 		static private const vertices:uint = 4;
@@ -43,7 +43,7 @@ package starlingEx.display {
 			if (apply) multiplyColor();
 		}
 		public function getRGB(index:uint=0):Array {
-			var returnA:Array = Pool.getArray();
+			var returnA:Array = Utils.getArray();
 			returnA[0] = trueV[index].r;
 			returnA[1] = trueV[index].g;
 			returnA[2] = trueV[index].b;
@@ -137,7 +137,7 @@ package starlingEx.display {
 			var parentMultA:Array = ApertureUtils.getParentMult(this);
 			calcMult(parentMultA,vertexID);
 			applyVertexMult(vertexID);
-			if (parentMultA) Pool.putArray(parentMultA);
+			Utils.putArray(parentMultA);
 		}
 		override public function readjustSize(width:Number=-1,height:Number=-1):void {
 			quadW = width;
