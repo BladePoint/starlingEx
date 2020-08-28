@@ -66,7 +66,7 @@ package starlingEx.display {
 				initG:uint = Color.getGreen(initHex),
 				initB:uint = Color.getBlue(initHex);
 			var tween:TweenEx = TweenEx.getTween(0,duration,transition);
-			tween.animateT(1);
+			tween.animateEx(1);
 			var updateA:Array = PoolEx.getArray(),
 				completeA:Array = PoolEx.getArray();
 			tween.onUpdate = updateTween;
