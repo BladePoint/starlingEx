@@ -3,17 +3,16 @@ package starlingEx.display {
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.Sprite;
-	import starling.utils.Pool;
 	import starlingEx.display.ApertureObject;
 	import starlingEx.display.ApertureUtils;
 	import starlingEx.display.IAperture;
 	import starlingEx.display.IApertureDisplayObjectContainer;
+	import starlingEx.utils.Utils;
 
 	public class ApertureSprite extends Sprite implements IAperture, IApertureDisplayObjectContainer {
 
 		private var true_AO:ApertureObject, mult_AO:ApertureObject;
 		private var _apertureLock:Boolean;
-		private var _stepParent:DisplayObjectContainer;
 		public function ApertureSprite(colorHex:uint=0xffffff) {
 			true_AO = ApertureObject.getApertureObject(colorHex);
 			mult_AO = ApertureObject.getApertureObject(colorHex);
@@ -31,7 +30,7 @@ package starlingEx.display {
 			if (apply) multiplyColor();
 		}
 		public function getRGB(index:uint=0):Array {
-			var returnA:Array = Pool.getArray();
+			var returnA:Array = Utils.getArray();
 			returnA[0] = true_AO.r;
 			returnA[1] = true_AO.g;
 			returnA[2] = true_AO.b;
@@ -45,8 +44,7 @@ package starlingEx.display {
 		public function set apertureLock(boolean:Boolean):void {_apertureLock = boolean;}
 		public function get apertureLock():Boolean {return _apertureLock;}
 		public function multiplyColor():void {
-			if (_apertureLock) return;
-			else ApertureUtils.multiplyChildren(this);
+			ApertureUtils.multiplyChildren(this);
 		}
 		public function calcMult(parentMultA:Array,index:uint=0):void {
 			if (parentMultA) mult_AO.hex = ApertureObject.multiplyRGB(true_AO,parentMultA);
@@ -57,14 +55,8 @@ package starlingEx.display {
 			ApertureUtils.multiplyChild(child);
 			return child;
 		}
-		public function set stepParent(stepDOC:DisplayObjectContainer):void {
-			_stepParent = stepDOC;
-		}
-		public function get stepParent():DisplayObjectContainer {
-			return _stepParent;
-		}
 		public function getMultRGB(index:uint=0):Array {
-			var returnA:Array = Pool.getArray();
+			var returnA:Array = Utils.getArray();
 			returnA[0] = mult_AO.r;
 			returnA[1] = mult_AO.g;
 			returnA[2] = mult_AO.b;
@@ -74,7 +66,6 @@ package starlingEx.display {
 			ApertureObject.putApertureObject(true_AO);
 			ApertureObject.putApertureObject(mult_AO);
 			true_AO = mult_AO = null;
-			_stepParent = null;
 			super.dispose();
 		}
 
