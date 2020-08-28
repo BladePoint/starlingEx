@@ -3,11 +3,11 @@ package starlingEx.display {
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.Sprite3D;
-	import starling.utils.Pool;
 	import starlingEx.display.ApertureObject;
 	import starlingEx.display.ApertureUtils;
 	import starlingEx.display.IAperture;
 	import starlingEx.display.IApertureDisplayObjectContainer;
+	import starlingEx.utils.Utils;
 
     public class ApertureSprite3D extends Sprite3D implements IAperture, IApertureDisplayObjectContainer {
 		
@@ -30,7 +30,7 @@ package starlingEx.display {
 			if (apply) multiplyColor();
 		}
 		public function getRGB(index:uint=0):Array {
-			var returnA:Array = Pool.getArray();
+			var returnA:Array = Utils.getArray();
 			returnA[0] = true_AO.r;
 			returnA[1] = true_AO.g;
 			returnA[2] = true_AO.b;
@@ -56,7 +56,7 @@ package starlingEx.display {
 			return child;
 		}
 		public function getMultRGB(index:uint=0):Array {
-			var returnA:Array = Pool.getArray();
+			var returnA:Array = Utils.getArray();
 			returnA[0] = mult_AO.r;
 			returnA[1] = mult_AO.g;
 			returnA[2] = mult_AO.b;
