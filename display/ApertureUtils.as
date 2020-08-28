@@ -12,7 +12,7 @@ package starlingEx.display {
 	import starlingEx.display.IAperture;
 	import starlingEx.display.IApertureMesh;
 	import starlingEx.display.IApertureDisplayObjectContainer;
-	import starlingEx.utils.Utils;
+	import starlingEx.utils.PoolEx;
 
 	public class ApertureUtils {
 		static public function multiplyChildren(iApertureDOC:IApertureDisplayObjectContainer):void {
@@ -20,7 +20,7 @@ package starlingEx.display {
 			var parentMultA:Array;
 			if (!iAperture.apertureLock) parentMultA = getParentMult(iApertureDOC as DisplayObject);
 			iAperture.calcMult(parentMultA);
-			Utils.putArray(parentMultA);
+			PoolEx.putArray(parentMultA);
 			var displayObjectContainer:DisplayObjectContainer = iApertureDOC as DisplayObjectContainer;
 			var l:uint = displayObjectContainer.numChildren;
 			for (var i:uint=0; i<l; i++) {
@@ -41,7 +41,7 @@ package starlingEx.display {
 				iAperture.calcMult(parentMultA,i);
 				iApertureMesh.applyVertexMult(i);
 			}
-			Utils.putArray(parentMultA);
+			PoolEx.putArray(parentMultA);
 		}
 		static public function getParentMult(displayObject:DisplayObject):Array {
 			var parentDOC:DisplayObjectContainer = displayObject.parent;
@@ -67,8 +67,8 @@ package starlingEx.display {
 				initB:uint = Color.getBlue(initHex);
 			var tween:TweenEx = TweenEx.getTween(0,duration,transition);
 			tween.animateT(1);
-			var updateA:Array = Utils.getArray(),
-				completeA:Array = Utils.getArray();
+			var updateA:Array = PoolEx.getArray(),
+				completeA:Array = PoolEx.getArray();
 			tween.onUpdate = updateTween;
 			updateA.push(iAperture,tween.tweenObject,initR,initG,initB,finalR,finalG,finalB);
 			tween.onUpdateArgs = updateA;
@@ -86,8 +86,8 @@ package starlingEx.display {
 		}
 		static private function completeTween(tween:TweenEx,updateA:Array,completeA:Array,onComplete:Function,delay:Number,juggler:Juggler):void {
 			TweenEx.putTween(tween);
-			Utils.putArray(updateA);
-			Utils.putArray(completeA);
+			PoolEx.putArray(updateA);
+			PoolEx.putArray(completeA);
 			if (onComplete != null) juggler.delayCall(onComplete,delay);
 		}
 		static public function fadeToBlack(iAperture:IAperture,duration:Number=1,onComplete:Function=null,onCompleteDelay:Number=0):void {
