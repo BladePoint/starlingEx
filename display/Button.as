@@ -17,9 +17,9 @@ package starlingEx.display {
 		protected var displayObject:DisplayObject;
 		protected var triggerBounds:Rectangle;
 		protected var hover:Boolean;
-		public function Button(displayObjectP:DisplayObject,clickFunctionP:Function) {
-			displayObject = displayObjectP;
-			clickFunction = clickFunctionP;
+		public function Button(displayObject:DisplayObject,clickFunction:Function) {
+			this.displayObject = displayObject;
+			this.clickFunction = clickFunction;
 			addChild(displayObject);
 			addEventListener(Event.ADDED_TO_STAGE,addedToStage);
 		}
