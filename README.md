@@ -9,7 +9,7 @@ In order to utilize ApertureSprite's color feature, it's children must implement
 
 ## ApertureTextFormat
 ApertureTextFormat extends TextFormat and can only be used with ApertureTextField. It adds 3 additional features.
-* Set each color of the corners of the letters.
+* Set the color of each corner of the letters.
 * Set the thickness and color of an outline that goes around each letter.
 * Set the position, color, and alpha of a dropshadow that appears behind each letter.
 
