@@ -5,7 +5,7 @@ This package contains several extensions that expand the functionality of their 
 An ApertureSprite is a container, much like its base Sprite class, with the additional functionality of allowing you to assign a color to it. The container itself does not display a color, but its IAperture children will automatically have their colors multiplied by the parent color, unless their apertureLock property is set to true. This is useful if you wish to tint a number of DisplayObjects at the same time to the same color, such as if you are doing a fade-to-black effect. You could also apertureLock one of the children to prevent it from darkening to produce a spotlight effect.
 
 ## ApertureQuad
-In order to utilize ApertureSprite's color feature, it's children must implement IAperture. ApertureQuad extends Quad and implements IAperture, and thus can have its color changed by its parent ApertureSprite. Changing colors in this manner is very fast and efficient and does not require additional draw calls, although it is limited in that it can only reduce the color in a channel, much like how making the aperture in a camera smaller can only reduce the amount of light coming in. If you wanted to increase the color in a channel, that would require the use of a color offset filter, which would need additional draw calls. The Starling Manual has an excellent [explanation of how this works.](https://manual.starling-framework.org/en/#_the_goal)
+In order to utilize ApertureSprite's color feature, it's children must implement IAperture. ApertureQuad extends Quad and implements IAperture, and thus can have its color changed by its parent ApertureSprite. Changing colors in this manner is very fast and efficient and does not require additional draw calls, although it is limited in that it can only reduce the color in a channel, much like how reducing the aperture size in a camera can only reduce the amount of light coming in. If you wanted to increase the color in a channel, that would require the use of a color offset filter, which would need additional draw calls. The Starling Manual has an excellent [explanation of how this works.](https://manual.starling-framework.org/en/#_the_goal)
 
 ## ApertureTextFormat
 ApertureTextFormat extends TextFormat and can only be used with ApertureTextField. It adds 3 additional features.
@@ -14,11 +14,22 @@ ApertureTextFormat extends TextFormat and can only be used with ApertureTextFiel
 * Set the position, color, and alpha of a dropshadow that appears behind all the letters.
 
 ## ApertureTextField
-ApertureTextField has some additional features over starling.text.TextField, but it requires you to use a DistanceFieldFont with an ApertureTextFormat. The formatting options in the ApertureTextFormat can be overridden inline in the text through the use of tags which use a format similar to BBCode.
-* The color tag can have either 1, 2, or 4 comma-separated assignments.
+ApertureTextField has some additional features over starling.text.TextField, but it requires you to use a DistanceFieldFont with an ApertureTextFormat. The formatting options in the ApertureTextFormat can be overridden inline in the text through the use of tags which use a format similar to BBCode. Don't forget to close your tags.
+* The [color] tag can have either 1, 2, or 4 comma-separated assignments.
   * Use 1 assignment like the following to color the text between the tags red: [color=0xff0000]red[/color]
   * If you use 2 assignments, the top half of the text will use the first color and the bottom half of the text will use the second color: [color=0xff0000,0x00ff00]red and green[/color]
   * If you use 4 assignments, the top left corner will use the first color, the top right corner will use the second color, the bottom left corner will use the third color, and the bottom right corner will use the fourth color: [color=0xff0000,0x00ff00,0x0000ff,0x000000]red, green, blue, and black[/color]
+* The [outlineColor] tag sets the color of the outline to go around the tagged text. [outlineColor=#0xff00]red outline[/outlineColor].
+* The [outlineWidth] tag sets the width of the outline to go around the tagged text. You may assign values between 0 (no outline) and .5 (max outline), although using higher values may cause artifacts to appear with the outline. You don't need to create a bold version of your DistanceFieldFont, if you use [outlineWidth] with an [outlineColor] set to the same color as your text. [outlineWidth=.25]medium thickness outline[/outlineWidth]
+* The [italic] tag simulates italics by skewing the letters to the side, so you don't have to create an italic version of your DistanceFieldFont. [italic]simulated italics[/italic]
+* The [underline] tag draws a line underneath the tagged text. [underline]line under this text[/underline]
+* The [strikehtrough] tag draw a line through the middle of the tagged text. [strikethrough]line through this text[/strikethrough]
+* The [link] tag makes a clickable link in your text, similar to a hyperlink. When setting the text of the ApertureTextField, either through the contructor or through the setText method, use the linkFunctionA paramter to pass an array of functions to be called. The first [link] in the text will call the first function in the array when clicked, and the second [link] in the text will call the second function in the array, etc.
+
+## TextLink
+Set the following static properties of the TextLink class to change the default colors of links in an ApertureTextField:
+defaultNormalTopLeft, defaultNormalTopRight, defaultNormalBottomLeft, defaultNormalBottomRight, defaultNormalOutlineColor, defaultHoverTopLeft,
+defaultHoverTopRight, defaultHoverBottomLeft, defaultHoverBottomRight, defaultHoverOutlineColor, defaultNormalWidth, defaultHoverWidth
 
 ## DistanceFieldFont
 DistanceFieldFont is similar to starling.text.BitmapFont, but it requires the use of a distance field bitmap generated by [Chlumsky's msdfgen.](https://github.com/Chlumsky/msdfgen) Once you've instantiated a DistanceFieldFont, call assignWhiteTexture(x:uint,y:uint) and pass in the coordinates of a 1x1 section of the bitmap that is purely white. This texture will be used when drawing strikethroughs and underlines to minimize draw calls.
