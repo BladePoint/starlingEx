@@ -27,7 +27,7 @@ ApertureTextField has some additional features over starling.text.TextField, but
 * The [link] tag makes a clickable link in your text, similar to a hyperlink. When setting the text of the ApertureTextField, either through the contructor or through the setText method, use the linkFunctionA paramter to pass an array of functions to be called. The first [link] in the text will call the first function in the array when clicked, and the second [link] in the text will call the second function in the array, etc. [link]clickable link[/link]
 
 ## TextLink
-Set the following static properties of the TextLink class to change the default colors of links in an ApertureTextField:
+Set the following static properties of the TextLink class to change the default colors of links in all ApertureTextFields:
 defaultNormalTopLeft, defaultNormalTopRight, defaultNormalBottomLeft, defaultNormalBottomRight, defaultNormalOutlineColor, defaultHoverTopLeft,
 defaultHoverTopRight, defaultHoverBottomLeft, defaultHoverBottomRight, defaultHoverOutlineColor, defaultNormalWidth, defaultHoverWidth
 
