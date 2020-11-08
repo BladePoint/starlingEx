@@ -15,7 +15,7 @@ ApertureTextFormat extends TextFormat and can only be used with ApertureTextFiel
 
 ## ApertureTextField
 ![ApertureTextField](https://github.com/BladePoint/StarlingEx/blob/master/docs/ApertureTextField.png)
-ApertureTextField has some additional features over starling.text.TextField, but it requires you to use a DistanceFieldFont with an ApertureTextFormat. The formatting options in the ApertureTextFormat can be overridden inline in the text through the use of tags which use a format similar to BBCode. Don't forget to close your tags.
+ApertureTextField has some additional features over starling.text.TextField, but it requires you to use a DistanceFieldFont with an ApertureTextFormat. The formatting options in the ApertureTextFormat can be overridden inline in the text through the use of tags which use a format similar to BBCode.
 * The [color] tag can have either 1, 2, or 4 comma-separated assignments.
   * Use 1 assignment like the following to color the text between the tags red: [color=0xff0000]red[/color]
   * If you use 2 assignments, the top half of the text will use the first color and the bottom half of the text will use the second color: [color=0xff0000,0x00ff00]red and green[/color]
@@ -26,6 +26,7 @@ ApertureTextField has some additional features over starling.text.TextField, but
 * The [underline] tag draws a line underneath the tagged text. [underline]line under this text[/underline]
 * The [strikehtrough] tag draw a line through the middle of the tagged text. [strikethrough]line through this text[/strikethrough]
 * The [link] tag makes a clickable link in your ApertureTextField, similar to a hyperlink. When setting the text of the ApertureTextField, either through the contructor or through the setText method, use the linkFunctionA paramter to pass an array of functions to be called. The first [link] in the text will call the first function in the array when clicked, and the second [link] in the text will call the second function in the array, etc. [link]clickable link[/link]
+Don't forget to close your tags. Try out the [demo here](https://www.newgrounds.com/projects/games/1546135/preview) and use the slider at the bottom of the screen to increase the scale. You'll notice there is no pixelization as the size increases because ApertureTextField uses distance field fonts.
 
 ## TextLink
 Set the following static properties of the TextLink class to change the default colors of links in all ApertureTextFields:
