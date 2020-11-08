@@ -25,7 +25,7 @@ ApertureTextField has some additional features over starling.text.TextField, but
 * The [italic] tag simulates italics by skewing the letters to the side, so you don't have to create an italic version of your DistanceFieldFont. [italic]simulated italics[/italic]
 * The [underline] tag draws a line underneath the tagged text. [underline]line under this text[/underline]
 * The [strikehtrough] tag draw a line through the middle of the tagged text. [strikethrough]line through this text[/strikethrough]
-* The [link] tag makes a clickable link in your text, similar to a hyperlink. When setting the text of the ApertureTextField, either through the contructor or through the setText method, use the linkFunctionA paramter to pass an array of functions to be called. The first [link] in the text will call the first function in the array when clicked, and the second [link] in the text will call the second function in the array, etc. [link]clickable link[/link]
+* The [link] tag makes a clickable link in your ApertureTextField, similar to a hyperlink. When setting the text of the ApertureTextField, either through the contructor or through the setText method, use the linkFunctionA paramter to pass an array of functions to be called. The first [link] in the text will call the first function in the array when clicked, and the second [link] in the text will call the second function in the array, etc. [link]clickable link[/link]
 
 ## TextLink
 Set the following static properties of the TextLink class to change the default colors of links in all ApertureTextFields:
