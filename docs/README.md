@@ -14,6 +14,7 @@ ApertureTextFormat extends TextFormat and can only be used with ApertureTextFiel
 * Set the position, color, and alpha of a dropshadow that appears behind all the letters.
 
 ## ApertureTextField
+![ApertureTextField](https://github.com/BladePoint/StarlingEx/blob/master/docs/ApertureTextField.png)
 ApertureTextField has some additional features over starling.text.TextField, but it requires you to use a DistanceFieldFont with an ApertureTextFormat. The formatting options in the ApertureTextFormat can be overridden inline in the text through the use of tags which use a format similar to BBCode. Don't forget to close your tags.
 * The [color] tag can have either 1, 2, or 4 comma-separated assignments.
   * Use 1 assignment like the following to color the text between the tags red: [color=0xff0000]red[/color]
