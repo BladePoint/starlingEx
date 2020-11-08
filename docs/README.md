@@ -26,6 +26,7 @@ ApertureTextField has some additional features over starling.text.TextField, but
 * The [underline] tag draws a line underneath the tagged text. [underline]line under this text[/underline]
 * The [strikehtrough] tag draw a line through the middle of the tagged text. [strikethrough]line through this text[/strikethrough]
 * The [link] tag makes a clickable link in your ApertureTextField, similar to a hyperlink. When setting the text of the ApertureTextField, either through the contructor or through the setText method, use the linkFunctionA paramter to pass an array of functions to be called. The first [link] in the text will call the first function in the array when clicked, and the second [link] in the text will call the second function in the array, etc. [link]clickable link[/link]
+
 Don't forget to close your tags. Try out the [demo here](https://www.newgrounds.com/projects/games/1546135/preview) and use the slider at the bottom of the screen to increase the scale. You'll notice there is no pixelization as the size increases because ApertureTextField uses distance field fonts.
 
 ## TextLink
