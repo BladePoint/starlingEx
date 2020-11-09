@@ -1,17 +1,23 @@
+// StarlingEx - https://github.com/BladePoint/StarlingEx
+// Copyright Doublehead Games, LLC. All rights reserved.
+// This code is open source under the MIT License - https://github.com/BladePoint/StarlingEx/blob/master/LICENSE
+// Use in conjunction with Starling - https://gamua.com/starling/
+
 package starlingEx.animation {
 
+	/* A poolable object with a single property for tweening. */
 	public class TweenObject {
-		static var tweenObjectV:Vector.<TweenObject> = new <TweenObject>[];
-		static public function getTweenObject(initialT:Number=0):TweenObject {
-			if (tweenObjectV.length == 0) return new TweenObject(initialT);
+		static var instancePool:Vector.<TweenObject> = new <TweenObject>[];
+		static public function getInstance(initialT:Number=0):TweenObject {
+			if (instancePool.length == 0) return new TweenObject(initialT);
 			else {
-				var tweenObject:TweenObject = tweenObjectV.pop();
+				var tweenObject:TweenObject = instancePool.pop();
 				tweenObject.t = initialT;
 				return tweenObject;
 			}
 		}
-		static public function putTweenObject(tweenObject:TweenObject):void {
-			if (tweenObject) tweenObjectV[tweenObjectV.length] = tweenObject;
+		static public function putInstance(tweenObject:TweenObject):void {
+			if (tweenObject) instancePool[instancePool.length] = tweenObject;
 		}
 
 		public var t:Number;
