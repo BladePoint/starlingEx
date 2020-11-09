@@ -1,3 +1,8 @@
+// StarlingEx - https://github.com/BladePoint/StarlingEx
+// Copyright Doublehead Games, LLC. All rights reserved.
+// This code is open source under the MIT License - https://github.com/BladePoint/StarlingEx/blob/master/docs/LICENSE
+// Use in conjunction with Starling - https://gamua.com/starling/
+
 package starlingEx.display {
 
 	import starling.animation.Juggler;
@@ -12,15 +17,15 @@ package starlingEx.display {
 	import starlingEx.display.IAperture;
 	import starlingEx.display.IApertureMesh;
 	import starlingEx.display.IApertureDisplayObjectContainer;
+	import starlingEx.styles.ApertureDistanceFieldStyle;
 	import starlingEx.utils.PoolEx;
 
 	public class ApertureUtils {
 		static public function multiplyChildren(iApertureDOC:IApertureDisplayObjectContainer):void {
 			var iAperture:IAperture = iApertureDOC as IAperture;
-			var parentMultA:Array;
-			if (!iAperture.apertureLock) parentMultA = getParentMult(iApertureDOC as DisplayObject);
-			iAperture.calcMult(parentMultA);
-			PoolEx.putArray(parentMultA);
+			var parentMult_AO:ApertureObject;
+			if (!iAperture.apertureLock) parentMult_AO = getParentMult(iApertureDOC as DisplayObject);
+			iAperture.calcMult(parentMult_AO);
 			var displayObjectContainer:DisplayObjectContainer = iApertureDOC as DisplayObjectContainer;
 			var l:uint = displayObjectContainer.numChildren;
 			for (var i:uint=0; i<l; i++) {
@@ -33,24 +38,32 @@ package starlingEx.display {
 				if (!iAperture.apertureLock) iAperture.multiplyColor();
 			}
 		}
-		static public function multiplyVertices(iApertureMesh:IApertureMesh,vertices:uint):void {
+		static public function multiplyVertex(iApertureMesh:IApertureMesh,vertexV:Vector.<uint>):void {
 			var iAperture:IAperture = iApertureMesh as IAperture;
-			var parentMultA:Array;
-			if (!iAperture.apertureLock) parentMultA = getParentMult(iApertureMesh as DisplayObject);
-			for (var i:uint=0; i<vertices; i++) {
-				iAperture.calcMult(parentMultA,i);
-				iApertureMesh.applyVertexMult(i);
+			var parentMult_AO:ApertureObject;
+			if (!iAperture.apertureLock) parentMult_AO = getParentMult(iApertureMesh as DisplayObject);
+			var l:uint = vertexV.length;
+			for (var i:uint=0; i<l; i++) {
+				iAperture.calcMult(parentMult_AO,vertexV[i]);
+				iApertureMesh.applyVertexMult(vertexV[i]);
 			}
-			PoolEx.putArray(parentMultA);
 		}
-		static public function getParentMult(displayObject:DisplayObject):Array {
-			var parentDOC:DisplayObjectContainer = displayObject.parent;
-			var parentMultA:Array;
+		static public function multiplyStyle(style:ApertureDistanceFieldStyle):void {
+			var iAperture:IAperture = style as IAperture;
+			if (!iAperture.apertureLock) {
+				var parentMult_AO:ApertureObject = getParentMult(style.target);
+				iAperture.calcMult(parentMult_AO);
+			}
+		}
+		static private function getParentMult(displayObject:DisplayObject):ApertureObject {
+			var parentDOC:DisplayObjectContainer;
+			if (displayObject) parentDOC = displayObject.parent;
+			var parentMult_AO:ApertureObject;
 			if (parentDOC is IApertureDisplayObjectContainer) {
 				var parentApertureDOC:IApertureDisplayObjectContainer = parentDOC as IApertureDisplayObjectContainer;
-				parentMultA = parentApertureDOC.getMultRGB();
+				parentMult_AO = parentApertureDOC.getMultAO();
 			}
-			return parentMultA;
+			return parentMult_AO;
 		}
 		static public function tweenApertureHex(iAperture:IAperture,colorHex:uint,duration:Number,transition:String=null,onComplete:Function=null,onCompleteDelay:Number=0,juggler:Juggler=null):void {
 			var r:uint = Color.getRed(colorHex),
@@ -65,7 +78,7 @@ package starlingEx.display {
 			var initR:uint = Color.getRed(initHex),
 				initG:uint = Color.getGreen(initHex),
 				initB:uint = Color.getBlue(initHex);
-			var tween:TweenEx = TweenEx.getTween(0,duration,transition);
+			var tween:TweenEx = TweenEx.getInstance(0,duration,transition);
 			tween.animateEx(1);
 			var updateA:Array = PoolEx.getArray(),
 				completeA:Array = PoolEx.getArray();
@@ -85,7 +98,7 @@ package starlingEx.display {
 			iAperture.setRGB(r,g,b);
 		}
 		static private function completeTween(tween:TweenEx,updateA:Array,completeA:Array,onComplete:Function,delay:Number,juggler:Juggler):void {
-			TweenEx.putTween(tween);
+			TweenEx.putInstance(tween);
 			PoolEx.putArray(updateA);
 			PoolEx.putArray(completeA);
 			if (onComplete != null) juggler.delayCall(onComplete,delay);
