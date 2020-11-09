@@ -1,4 +1,11 @@
+// StarlingEx - https://github.com/BladePoint/StarlingEx
+// Copyright Doublehead Games, LLC. All rights reserved.
+// This code is open source under the MIT License - https://github.com/BladePoint/StarlingEx/blob/master/docs/LICENSE
+// Use in conjunction with Starling - https://gamua.com/starling/
+
 package starlingEx.utils {
+
+	import starlingEx.utils.Utils;
 
 	public class PoolEx {
 		static private var arrayV:Vector.<Array> = new <Array>[];
@@ -10,6 +17,17 @@ package starlingEx.utils {
 			if (array) {
 				array.length = 0;
 				arrayV[arrayV.length] = array;
+			}
+		}
+		static private var objectV:Vector.<Object> = new <Object>[];
+		static public function getObject():Object {
+			if (objectV.length == 0) return {};
+			else return objectV.pop();
+		}
+		static public function putObject(object:Object):void {
+			if (object) {
+				Utils.deleteObject(object,false);
+				objectV[objectV.length] = object;
 			}
 		}
 		static private var uintVV:Vector.<Vector.<uint>> = new <Vector.<uint>>[];
@@ -35,8 +53,10 @@ package starlingEx.utils {
 			}
 		}
 		static public function putUintV(uintV:Vector.<uint>):void {
-			uintV.length = 0;
-			uintVV[uintVV.length] = uintV;
+			if (uintV) {
+				uintV.length = 0;
+				uintVV[uintVV.length] = uintV;
+			}
 		}
 
 		public function PoolEx() {}
