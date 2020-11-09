@@ -1,72 +1,81 @@
+// StarlingEx - https://github.com/BladePoint/StarlingEx
+// Copyright Doublehead Games, LLC. All rights reserved.
+// This code is open source under the MIT License - https://github.com/BladePoint/StarlingEx/blob/master/LICENSE
+// Use in conjunction with Starling - https://gamua.com/starling/
+
 package starlingEx.display {
 
 	import starling.utils.Color;
 
+	/* An ApertureObject stores color data in both RGB and hexadecimal formats. */
 	public class ApertureObject {
-		static const argumentErrorString:String = "ApertureObject must have 0, 1, or 3 arguments."
-		static private var apertureObjectV:Vector.<ApertureObject> = new <ApertureObject>[];
-		static public function getApertureObject(...args):ApertureObject {
+		static const argumentErrorString:String = "ApertureObject must have 0, 1, or 3 arguments which are non-negative."
+		static private var instancePool:Vector.<ApertureObject> = new <ApertureObject>[];
+		static public function getInstance(p1:int=-1,p2:int=-1,p3:int=-1):ApertureObject {
 			var apertureObject:ApertureObject;
-			var l:uint = args.length;
-			if (l == 0) {
-				if (apertureObjectV.length == 0) apertureObject = new ApertureObject();
-				else {
-					apertureObject = apertureObjectV.pop();
-					apertureObject.hex = Color.WHITE;
-				}
-			} else if (l == 1) {
-				if (apertureObjectV.length == 0) apertureObject = new ApertureObject(args[0]);
-				else {
-					apertureObject = apertureObjectV.pop();
-					apertureObject.hex = args[0];
-				}
-			} else if (l == 3) {
-				if (apertureObjectV.length == 0) apertureObject = new ApertureObject(args[0],args[1],args[2]);
-				else {
-					apertureObject = apertureObjectV.pop();
-					apertureObject.rgb(args[0],args[1],args[2]);
-				}
-			} else throw new ArgumentError(argumentErrorString);
+			if (instancePool.length == 0) apertureObject = new ApertureObject(p1,p2,p3);
+			else {
+				apertureObject = instancePool.pop();
+				apertureObject.init(p1,p2,p3);
+			}
 			return apertureObject;
 		}
-		static public function putApertureObject(apertureObject:ApertureObject):void {
-			if (apertureObject) apertureObjectV[apertureObjectV.length] = apertureObject;
+		static public function putInstance(apertureObject:ApertureObject):void {
+			if (apertureObject) instancePool[instancePool.length] = apertureObject;
 		}
-		static public function multiplyRGB(apertureObject:ApertureObject,multA:Array):uint {
-			if (multA) {
-				var r:uint = apertureObject.r * getRatio(multA[0]),
-					g:uint = apertureObject.g * getRatio(multA[1]),
-					b:uint = apertureObject.b * getRatio(multA[2]);
+		static private var vectorPool:Array = [];
+		static public function getVector():Vector.<ApertureObject> {
+			var vector:Vector.<ApertureObject>;
+			if (vectorPool.length == 0) vector = new <ApertureObject>[];
+			else vector = vectorPool.pop();
+			return vector;
+		}
+		static public function putVector(vector:Vector.<ApertureObject>):void {
+			if (vector) {
+				vector.length = 0;
+				vectorPool[vectorPool.length] = vector;
+			}
+		}
+		static public function multiply(true_AO:ApertureObject,parentMult_AO:ApertureObject):uint {
+			if (parentMult_AO) {
+				var r:uint = true_AO.r * getRatio(parentMult_AO.r),
+					g:uint = true_AO.g * getRatio(parentMult_AO.g),
+					b:uint = true_AO.b * getRatio(parentMult_AO.b);
 				return Color.rgb(r,g,b);
-			} else return apertureObject.hex;
+			} else return true_AO.hex;
 		}
 		static private function getRatio(value:uint):Number {
 			return value / 255;
 		}
 
-		private var _r:uint, _g:uint, _b:uint, _apertureHex:uint;
-		public function ApertureObject(...args) {
-			var l:uint = args.length;
-			if (l == 0) {
-				_apertureHex = Color.WHITE;
+		/* If you wish to instantiate an ApertureObject with a color in hexadecimal format, pass that value as the first parameter
+		   and leave the others as default. If you wish to instantiate with a color in RGB format, use the red, green, and blue values
+		   as the parameters respectively. */
+		private var _r:uint, _g:uint, _b:uint, _hex:uint;
+		public function ApertureObject(p1:int=-1,p2:int=-1,p3:int=-1) {
+			init(p1,p2,p3);
+		}
+		private function init(p1:int,p2:int,p3:int):void {
+			if (p1 == -1 && p2 == -1 && p3 == -1) {
+				_hex = 0xffffff;
+				_r = _g = _b = 255;
+			} else if (p1 != -1 && p2 == -1 && p3 == -1) {
+				_hex = p1;
 				calcRGB();
-			} else if (l == 1) {
-				_apertureHex = args[0];
-				calcRGB();
-			} else if (l == 3) {
-				_r = args[0];
-				_g = args[1];
-				_b = args[2];
+			} else if (p1 != -1 && p2 != -1 && p3 != -1) {
+				_r = p1;
+				_g = p2;
+				_b = p3;
 				calcHex();
 			} else throw new ArgumentError(argumentErrorString);
 		}
 		private function calcRGB():void {
-			_r = Color.getRed(_apertureHex);
-			_g = Color.getGreen(_apertureHex);
-			_b = Color.getBlue(_apertureHex);
+			_r = Color.getRed(_hex);
+			_g = Color.getGreen(_hex);
+			_b = Color.getBlue(_hex);
 		}
 		private function calcHex():void {
-			_apertureHex = Color.rgb(_r,_g,_b);
+			_hex = Color.rgb(_r,_g,_b);
 		}
 		public function rgb(newR:uint,newG:uint,newB:uint):void {
 			_r = newR;
@@ -96,10 +105,10 @@ package starlingEx.display {
 			calcHex();
 		}
 		public function get hex():uint {
-			return _apertureHex;
+			return _hex;
 		}
 		public function set hex(newHex:uint):void {
-			_apertureHex = newHex;
+			_hex = newHex;
 			calcRGB();
 		}
 
