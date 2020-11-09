@@ -1,3 +1,8 @@
+// StarlingEx - https://github.com/BladePoint/StarlingEx
+// Copyright Doublehead Games, LLC. All rights reserved.
+// This code is open source under the MIT License - https://github.com/BladePoint/StarlingEx/blob/master/docs/LICENSE
+// Use in conjunction with Starling - https://gamua.com/starling/
+
 package starlingEx.display {
 
 	import flash.geom.Rectangle;
@@ -9,7 +14,7 @@ package starlingEx.display {
 	import starling.utils.Pool;
 	import starlingEx.display.ApertureSprite;
 
-	public class Button extends ApertureSprite {
+	public class ButtonEx extends ApertureSprite {
 
 		public var clickFunction:Function;
 		public var enableOnAdd:Boolean = true,
@@ -17,25 +22,29 @@ package starlingEx.display {
 		protected var displayObject:DisplayObject;
 		protected var triggerBounds:Rectangle;
 		protected var hover:Boolean;
-		public function Button(displayObject:DisplayObject,clickFunction:Function) {
+		public function ButtonEx(displayObject:DisplayObject,clickFunction:Function) {
 			this.displayObject = displayObject;
 			this.clickFunction = clickFunction;
 			addChild(displayObject);
+			useHandCursor = true;
+			initTriggerBounds();
+			removedFromStage();
+		}
+		protected function initTriggerBounds():void {
+			triggerBounds = Pool.getRectangle();
+		}
+		protected function removedFromStage(evt:Event=null):void {
+			removeEventListener(Event.REMOVED_FROM_STAGE,removedFromStage);
 			addEventListener(Event.ADDED_TO_STAGE,addedToStage);
 		}
 		protected function addedToStage(evt:Event):void {
 			removeEventListener(Event.ADDED_TO_STAGE,addedToStage);
-			triggerBounds = Pool.getRectangle();
-			setBounds();
-			touchGroup = useHandCursor = true;
 			initTouch();
+			addEventListener(Event.REMOVED_FROM_STAGE,removedFromStage);
 		}
 		protected function initTouch():void {
 			if (enableOnAdd) enableTouch();
 			else disableTouch();
-		}
-		public function setBounds():void {
-			displayObject.getBounds(displayObject.stage,triggerBounds);
 		}
 		public function enableTouch():void {
 			addEventListener(TouchEvent.TOUCH,onTouch);
@@ -51,38 +60,49 @@ package starlingEx.display {
 			if (touch == null) mouseOut();
 			else {
 				if (touch.phase == TouchPhase.HOVER) mouseOver();
+				else if (touch.phase == TouchPhase.BEGAN && hover) mouseDown(evt,touch);
 				else if (touch.phase == TouchPhase.MOVED) mouseMove(touch);
-				else if (touch.phase == TouchPhase.BEGAN && hover) mouseDown(touch);
 				else if (touch.phase == TouchPhase.ENDED && hover) mouseUp(touch);
 			}
 		}
-		protected function mouseOut():void {
+		private function mouseOut():void {
 			hover = false;
+			mouseOutMethod();
 		}
-		protected function mouseOver():void {
+		protected function mouseOutMethod():void {}
+		private function mouseOver():void {
 			if (hover) return;
-			else hover = true;
+			else {
+				hover = true;
+				mouseOverMethod();
+			}
 		}
+		protected function mouseOverMethod():void {}
 		protected function mouseMove(touch:Touch):void {
 			var withinBounds:Boolean = triggerBounds.contains(touch.globalX,touch.globalY);
-			if (!withinBounds) mouseOut();
-			else if (!hover) mouseOver();
+			if (hover && !withinBounds) mouseOut();
+			else if (!hover && withinBounds) mouseOver();
 		}
-		protected function mouseDown(touch:Touch):void {
+		protected function mouseDown(touchEvent:TouchEvent,touch:Touch):void {
+			var displayObject:DisplayObject = touchEvent.target as DisplayObject;
 			displayObject.getBounds(stage,triggerBounds);
 		}
-		protected function mouseUp(touch:Touch):void {
+		private function mouseUp(touch:Touch):void {
 			if (touch.cancelled) return;
 			else {
+				mouseUpMethod();
 				if (clickFunction != null) clickFunction();
 				if (disableOnClick) disableTouch();
 			}
 		}
+		protected function mouseUpMethod():void {}
 		override public function dispose():void {
+			removeEventListener(Event.REMOVED_FROM_STAGE,removedFromStage);
+			removeEventListener(Event.ADDED_TO_STAGE,addedToStage);
+			removeEventListener(TouchEvent.TOUCH,onTouch);
 			clickFunction = null;
 			removeChild(displayObject);
 			displayObject = null;
-			removeEventListener(TouchEvent.TOUCH,onTouch);
 			Pool.putRectangle(triggerBounds);
 			triggerBounds = null;
 			super.dispose();
