@@ -1,0 +1,55 @@
+// StarlingEx - https://github.com/BladePoint/StarlingEx
+// Copyright Doublehead Games, LLC. All rights reserved.
+// This code is open source under the MIT License - https://github.com/BladePoint/StarlingEx/blob/master/LICENSE
+// Use in conjunction with Starling - https://gamua.com/starling/
+
+package starlingEx.animation {
+
+	import starling.animation.Transitions;
+	import starling.errors.AbstractClassError;
+
+	/* Additional transitions for tweening. */
+	public class TransitionsEx {
+		static public function register():void {
+			Transitions.register("easeInCubic",easeInCubic);
+			Transitions.register("easeOutCubic",easeOutCubic);
+			Transitions.register("easeOutQuintic",easeOutQuintic);
+			Transitions.register("easeInOutCubic",easeInOutCubic);
+			Transitions.register("easeInOutQuartic",easeInOutQuartic);
+			Transitions.register("easeInOutQuintic",easeInOutQuintic);
+		}
+		static protected function easeInCubic(ratio:Number):Number {
+			return Math.pow(ratio,4);
+		}
+		static protected function easeOutCubic(ratio:Number):Number {
+			ratio--;
+			return (Math.pow(ratio,3) + 1);
+		}
+		static protected function easeOutQuintic(ratio:Number):Number {
+			ratio--;
+			return (Math.pow(ratio,5) + 1);
+		}
+		static protected function easeInOutCubic(ratio:Number):Number {
+			ratio *= 2;
+			if (ratio < 1) return Math.pow(ratio,3)/2;
+			ratio -= 2;
+			return (Math.pow(ratio,3) + 2)/2;
+		}
+		static protected function easeInOutQuartic(ratio:Number):Number {
+			ratio *= 2;
+			if (ratio < 1) return Math.pow(ratio,4)/2;
+			ratio -= 2;
+			return (2-Math.pow(ratio,4))/2;
+		}
+		static protected function easeInOutQuintic(ratio:Number):Number {
+			ratio *= 2;
+			if (ratio < 1) return .5*Math.pow(ratio,5);
+			ratio -= 2;
+			return .5*(Math.pow(ratio,5) + 2);
+		}
+
+		public function TransitionsExtended() {throw new AbstractClassError();}
+
+	}
+
+}
