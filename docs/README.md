@@ -1,5 +1,5 @@
 # StarlingEx
-This package contains several extensions that expand the functionality of their base Starling classes, and some new original classes as well that I hope you will find useful. The highlights are as follows.
+This repository contains several extensions that expand the functionality of their base Starling classes, and some new original classes as well that I hope you will find useful. The highlights are as follows.
 
 ## ApertureSprite
 An ApertureSprite is a container, much like its base Sprite class, with the additional functionality of allowing you to assign a color to it. The container itself does not display a color, but its IAperture children will automatically have their colors multiplied by the parent color, unless their apertureLock property is set to true. This is useful if you wish to tint a number of DisplayObjects at the same time to the same color, such as if you are doing a fade-to-black effect. You could also apertureLock one of the children to prevent it from darkening to produce a spotlight effect.
