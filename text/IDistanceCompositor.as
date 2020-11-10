@@ -19,7 +19,7 @@ package starlingEx.text {
 		function getDefaultSoftness(format:ApertureTextFormat):Number;
 		function setupOutline(charLocation:CharLocation,outlineColor:uint,outlineWidth:Number):void;
 		function updateOutlineWidth(charLocation:CharLocation,outlineWidth:Number):void;
-		function clearSprites(charLocationV:Vector.<CharLocation>):void;
+		function resetCharLocation(charLocationV:Vector.<CharLocation>):void;
 		function dispose():void;
 
 	}
