@@ -415,13 +415,14 @@ package starlingEx.text {
 		public function updateOutlineWidth(charLocation:CharLocation,outlineWidth:Number):void {
 			charLocation.updateOutlineWidth(outlineWidth,getTextLineQuad,putTextLineQuad,multiChannel);
 		}
-		public function clearSprites(charLocationV:Vector.<CharLocation>):void {
+		public function resetCharLocation(charLocationV:Vector.<CharLocation>):void {
 			if (charLocationV) {
 				var l:uint = charLocationV.length;
 				for (var i:uint=0; i<l; i++) {
 					var charLocation:CharLocation = charLocationV[i];
 					CharLocation.putInstance(charLocation,putCharQuad,putTextLineQuad);
 				}
+				charLocationV.length = 0;
 			}
 		}
 		public function get name():String {return _name;}
