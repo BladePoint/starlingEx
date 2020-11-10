@@ -88,7 +88,7 @@ package starlingEx.text {
 		}
 		private function setHitArea(w:int,h:int):void {
 			_hitArea = Pool.getRectangle();
-			const max:uint = 100000;
+			const max:uint = uint.MAX_VALUE;
 			if (w>0 && h>0) {
 				_options.autoSize = TextFieldAutoSize.NONE;
 				_hitArea.width = w;
@@ -103,6 +103,15 @@ package starlingEx.text {
 				_hitArea.height = h;
 			} else if (w<0 && h<0) {
 				_options.autoSize = TextFieldAutoSize.BOTH_DIRECTIONS;
+				_hitArea.width = max;
+				_hitArea.height = max;
+			}
+		}
+		private function resetHitArea():void {
+			const max:uint = uint.MAX_VALUE;
+			if (_options.autoSize == TextFieldAutoSize.VERTICAL) _hitArea.height = max;
+			else if (_options.autoSize == TextFieldAutoSize.HORIZONTAL) _hitArea.width = max;
+			else if (_options.autoSize == TextFieldAutoSize.BOTH_DIRECTIONS) {
 				_hitArea.width = max;
 				_hitArea.height = max;
 			}
@@ -409,8 +418,9 @@ package starlingEx.text {
 		public function setText(value:String,linkFunctionA:Array):void {
 			if (value == null) value = "";
 			_text = value;
+			resetHitArea();
 			setRequiresRecomposition();
-			if (linkFunctionA) this.linkFunctionA = linkFunctionA;
+			this.linkFunctionA = linkFunctionA;
 		}
 		private function apertureChange(evt:Event,changeHex:uint):void {
 			var baseColorB:Boolean = Boolean(Color.getAlpha(changeHex)),
