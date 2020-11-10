@@ -135,7 +135,7 @@ package starlingEx.text {
 			_textBounds = null;
 			disposeTags();
 			disposeTextLinkV();
-			compositor.clearSprites(charLocationV);
+			compositor.resetCharLocation(charLocationV);
 		}
 		private function parseText():void {
 			while (stripTag()) stripTag();
@@ -538,7 +538,9 @@ package starlingEx.text {
 		}
 		public override function dispose():void {
 			disposeTextLinkV();
-			compositor.clearSprites(charLocationV);
+			compositor.resetCharLocation(charLocationV);
+			CharLocation.putVector(charLocationV)
+			charLocationV = null;
 			removeChild(container_AS);
 			container_AS.dispose();
 			container_AS = null;
@@ -547,13 +549,6 @@ package starlingEx.text {
 				shadow_AS.dispose();
 				shadow_AS = null;
 			}
-			var l:uint = charLocationV.length;
-			for (var i:uint=0; i<l; i++) {
-				var charLocation:CharLocation = charLocationV[i];
-				CharLocation.putInstance(charLocation);
-			}
-			CharLocation.putVector(charLocationV)
-			charLocationV = null;
 			disposeTags();
 			Pool.putRectangle(_hitArea);
 			Pool.putRectangle(_textBounds);
