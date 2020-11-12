@@ -5,7 +5,6 @@
 
 package starlingEx.text {
 
-	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	import starling.display.DisplayObject;
@@ -31,6 +30,7 @@ package starlingEx.text {
 	import starlingEx.text.IDistanceCompositor;
 	import starlingEx.text.TagObject;
 	import starlingEx.text.TextLink;
+	import starlingEx.textures.TextureWrapper;
 	import starlingEx.utils.PoolEx;
 
 	/* A DistanceFieldFont parses a distance field bitmap and corresponding XML font file to create a Texture with which BitmapChar
@@ -94,13 +94,13 @@ package starlingEx.text {
 		}
 
 		public var underlineHeightPercent:Number = .82;
-		private var bitmapData:BitmapData;
+		private var textureWrapper:TextureWrapper;
 		private var _offsetX:Number, _offsetY:Number, _padding:Number, _size:Number, _lineHeight:Number, _baseline:Number, _distanceFieldSpread:Number;
 		private var _chars:Dictionary;
 		private var _name:String, _type:String, _smoothing:String;
-		private var _texture:Texture, _whiteTexture:Texture;
-		public function DistanceFieldFont(bitmapData:BitmapData,fontXML:XML) {
-			this.bitmapData = bitmapData;
+		private var whiteTexture:Texture;
+		public function DistanceFieldFont(textureWrapper:TextureWrapper,fontXML:XML) {
+			this.textureWrapper = textureWrapper;
 			_offsetX = _offsetY = _padding = 0.0;
 			_chars = new Dictionary();
 			addMissing();
@@ -131,7 +131,6 @@ package starlingEx.text {
 			_type = fontXML.distanceField.@fieldType == "msdf" ? BitmapFontType.MULTI_CHANNEL_DISTANCE_FIELD : BitmapFontType.DISTANCE_FIELD;
 		}
 		protected function parseXmlChar(fontXML:XML):void {
-			_texture = Texture.fromBitmapData(bitmapData);
 			for each (var charElement:XML in fontXML.chars.char) {
 				var id:int = parseInt(charElement.@id);
 				var xOffset:Number = parseFloat(charElement.@xoffset);
@@ -143,7 +142,7 @@ package starlingEx.text {
 					parseFloat(charElement.@width),
 					parseFloat(charElement.@height)
 				);
-				var texture:Texture = Texture.fromTexture(_texture,region);
+				var texture:Texture = Texture.fromTexture(textureWrapper.texture,region);
 				Pool.putRectangle(region);
 				var bitmapChar:BitmapChar = new BitmapChar(id,texture,xOffset,yOffset,xAdvance); 
 				addChar(id,bitmapChar);
@@ -159,10 +158,10 @@ package starlingEx.text {
 		   area of the initial bitmap should be assigned. */
 		public function setWhiteTexture(x:uint,y:uint):void {
 			var whiteRect:Rectangle = Pool.getRectangle(x,y,1,1);
-			_whiteTexture = Texture.fromTexture(_texture,whiteRect);
+			whiteTexture = Texture.fromTexture(textureWrapper.texture,whiteRect);
 			Pool.putRectangle(whiteRect);
 		}
-		public function getWhiteTexture():Texture {return _whiteTexture;}
+		public function getWhiteTexture():Texture {return whiteTexture;}
 		public function fillContainer(textField:ApertureTextField,width:Number,height:Number):Vector.<CharLocation> {
 			var charLocationV:Vector.<CharLocation> = arrangeLocations(width,height,textField);
 			var format:ApertureTextFormat = textField.apertureFormat;
@@ -431,17 +430,15 @@ package starlingEx.text {
 			else return false;
 		}
 		public function dispose():void {
-			bitmapData.dispose();
-			bitmapData = null;
+			textureWrapper.dispose();
+			textureWrapper = null;
 			for (var key:Object in _chars) {
 				delete _chars[key];
 			}
 			_chars = null;
-			_texture.dispose();
-			_texture = null;
-			if (_whiteTexture) {
-				_whiteTexture.dispose();
-				_whiteTexture = null;
+			if (whiteTexture) {
+				whiteTexture.dispose();
+				whiteTexture = null;
 			}
 		}
 
