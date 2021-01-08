@@ -7,7 +7,7 @@ package starlingEx.animation {
 
 	/* A poolable object with a single property for tweening. */
 	public class TweenObject {
-		static private var instancePool:Vector.<TweenObject> = new <TweenObject>[];
+		static private const instancePool:Vector.<TweenObject> = new <TweenObject>[];
 		static public function getInstance(initialT:Number=0):TweenObject {
 			if (instancePool.length == 0) return new TweenObject(initialT);
 			else {
