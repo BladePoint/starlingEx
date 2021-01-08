@@ -22,36 +22,36 @@ package starlingEx.display {
 
 	public class ApertureUtils {
 		static public function multiplyChildren(iApertureDOC:IApertureDisplayObjectContainer):void {
-			var iAperture:IAperture = iApertureDOC as IAperture;
+			const iAperture:IAperture = iApertureDOC as IAperture;
 			var parentMult_AO:ApertureObject;
 			if (!iAperture.apertureLock) parentMult_AO = getParentMult(iApertureDOC as DisplayObject);
 			iAperture.calcMult(parentMult_AO);
-			var displayObjectContainer:DisplayObjectContainer = iApertureDOC as DisplayObjectContainer;
-			var l:uint = displayObjectContainer.numChildren;
+			const displayObjectContainer:DisplayObjectContainer = iApertureDOC as DisplayObjectContainer;
+			const l:uint = displayObjectContainer.numChildren;
 			for (var i:uint=0; i<l; i++) {
 				multiplyChild(displayObjectContainer.getChildAt(i));
 			}
 		}
 		static public function multiplyChild(displayObject:DisplayObject):void {
 			if (displayObject is IAperture) {
-				var iAperture:IAperture = displayObject as IAperture;
+				const iAperture:IAperture = displayObject as IAperture;
 				if (!iAperture.apertureLock) iAperture.multiplyColor();
 			}
 		}
 		static public function multiplyVertex(iApertureMesh:IApertureMesh,vertexV:Vector.<uint>):void {
-			var iAperture:IAperture = iApertureMesh as IAperture;
+			const iAperture:IAperture = iApertureMesh as IAperture;
 			var parentMult_AO:ApertureObject;
 			if (!iAperture.apertureLock) parentMult_AO = getParentMult(iApertureMesh as DisplayObject);
-			var l:uint = vertexV.length;
+			const l:uint = vertexV.length;
 			for (var i:uint=0; i<l; i++) {
 				iAperture.calcMult(parentMult_AO,vertexV[i]);
 				iApertureMesh.applyVertexMult(vertexV[i]);
 			}
 		}
 		static public function multiplyStyle(style:ApertureDistanceFieldStyle):void {
-			var iAperture:IAperture = style as IAperture;
+			const iAperture:IAperture = style as IAperture;
 			if (!iAperture.apertureLock) {
-				var parentMult_AO:ApertureObject = getParentMult(style.target);
+				const parentMult_AO:ApertureObject = getParentMult(style.target);
 				iAperture.calcMult(parentMult_AO);
 			}
 		}
@@ -60,13 +60,13 @@ package starlingEx.display {
 			if (displayObject) parentDOC = displayObject.parent;
 			var parentMult_AO:ApertureObject;
 			if (parentDOC is IApertureDisplayObjectContainer) {
-				var parentApertureDOC:IApertureDisplayObjectContainer = parentDOC as IApertureDisplayObjectContainer;
+				const parentApertureDOC:IApertureDisplayObjectContainer = parentDOC as IApertureDisplayObjectContainer;
 				parentMult_AO = parentApertureDOC.getMultAO();
 			}
 			return parentMult_AO;
 		}
 		static public function tweenApertureHex(iAperture:IAperture,colorHex:uint,duration:Number,transition:String=null,onComplete:Function=null,onCompleteDelay:Number=0,juggler:Juggler=null):void {
-			var r:uint = Color.getRed(colorHex),
+			const r:uint = Color.getRed(colorHex),
 				g:uint = Color.getGreen(colorHex),
 				b:uint = Color.getBlue(colorHex);
 			tweenApertureRGB(iAperture,r,g,b,duration,transition,onComplete,onCompleteDelay,juggler);
@@ -74,13 +74,13 @@ package starlingEx.display {
 		static public function tweenApertureRGB(iAperture:IAperture,finalR:uint,finalG:uint,finalB:uint,duration:Number,transition:String=null,onComplete:Function=null,onCompleteDelay:Number=0,juggler:Juggler=null):void {
 			if (transition == null) transition = Transitions.LINEAR;
 			if (juggler == null) juggler = Starling.juggler;
-			var initHex:uint = iAperture.getHex();
-			var initR:uint = Color.getRed(initHex),
+			const initHex:uint = iAperture.getHex();
+			const initR:uint = Color.getRed(initHex),
 				initG:uint = Color.getGreen(initHex),
 				initB:uint = Color.getBlue(initHex);
-			var tween:TweenEx = TweenEx.getInstance(0,duration,transition);
+			const tween:TweenEx = TweenEx.getInstance(0,duration,transition);
 			tween.animateEx(1);
-			var updateA:Array = PoolEx.getArray(),
+			const updateA:Array = PoolEx.getArray(),
 				completeA:Array = PoolEx.getArray();
 			tween.onUpdate = updateTween;
 			updateA.push(iAperture,tween.tweenObject,initR,initG,initB,finalR,finalG,finalB);
@@ -91,8 +91,8 @@ package starlingEx.display {
 			juggler.add(tween);
 		}
 		static private function updateTween(iAperture:IAperture,tweenObject:TweenObject,initR:uint,initG:uint,initB:uint,finalR:uint,finalG:uint,finalB:uint):void {
-			var complement:Number = 1 - tweenObject.t;
-			var r:uint = Math.round(initR*complement+finalR*tweenObject.t),
+			const complement:Number = 1 - tweenObject.t;
+			const r:uint = Math.round(initR*complement+finalR*tweenObject.t),
 				g:uint = Math.round(initG*complement+finalG*tweenObject.t),
 				b:uint = Math.round(initB*complement+finalB*tweenObject.t);
 			iAperture.setRGB(r,g,b);
