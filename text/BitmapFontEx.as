@@ -43,7 +43,7 @@ package starlingEx.text {
 		private var fontTexture:Texture, whiteTexture:Texture;
 		private var fontBitmapData:BitmapData;
 
-		/* Pass a string of only the characters you wish to use, or use the default value if you want to use all the characters. */
+		/* Pass a string containing the characters you wish to use, or use the default value if you want to use all the characters. */
 		public function BitmapFontEx(characters:String="") {
 			_characters = characters;
 			_chars = new Dictionary();
