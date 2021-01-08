@@ -20,7 +20,7 @@ ApertureTextField has some additional features over starling.text.TextField, but
   * Use 1 assignment like the following to color the text between the tags red: [color=0xff0000]red[/color]
   * If you use 2 assignments, the top half of the text will use the first color and the bottom half of the text will use the second color: [color=0xff0000,0x00ff00]red and green[/color]
   * If you use 4 assignments, the top left corner will use the first color, the top right corner will use the second color, the bottom left corner will use the third color, and the bottom right corner will use the fourth color: [color=0xff0000,0x00ff00,0x0000ff,0x000000]red, green, blue, and black[/color]
-* The [outlineColor] tag sets the color of the outline to go around the tagged text. [outlineColor=#0xff00]red outline[/outlineColor].
+* The [outlineColor] tag sets the color of the outline to go around the tagged text. [outlineColor=0xff0000]red outline[/outlineColor].
 * The [outlineWidth] tag sets the width of the outline to go around the tagged text. You may assign values between 0 (no outline) and .5 (max outline), although using higher values may cause artifacts to appear with the outline. You don't need to create a bold version of your DistanceFieldFont, if you use [outlineWidth] with an [outlineColor] set to the same color as your text. [outlineWidth=.25]medium thickness outline[/outlineWidth]
 * The [italic] tag simulates italics by skewing the letters to the side, so you don't have to create an italic version of your DistanceFieldFont. [italic]simulated italics[/italic]
 * The [underline] tag draws a line underneath the tagged text. [underline]line under this text[/underline]
