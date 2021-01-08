@@ -52,10 +52,10 @@ package starlingEx.styles {
 				// va4 - outer settings (outerThreshold, outerAlphaEnd, outerOffsetX/Y)
 				// va5 - outer color (rgb, outerAlphaStart)
 				// vc5 - shadow offset multiplier (x, y), max local scale (z), global scale (w)
-				var isBasicMode:Boolean  = _mode == ApertureDistanceFieldStyle.MODE_BASIC;
-				var isShadowMode:Boolean = _mode == ApertureDistanceFieldStyle.MODE_SHADOW;
+				const isBasicMode:Boolean  = _mode == ApertureDistanceFieldStyle.MODE_BASIC;
+				const isShadowMode:Boolean = _mode == ApertureDistanceFieldStyle.MODE_SHADOW;
 				/// *** VERTEX SHADER ***
-				var vertexShader:Vector.<String> = new <String>[
+				const vertexShader:Vector.<String> = new <String>[
 					"m44 op, va0, vc0",       // 4x4 matrix transform to output clip-space
 					"mov v0, va1",            // pass texture coordinates to fragment program
 					"mul vt4, va3.yyyy, vc4", // multiply inner alpha (va3.y) with state alpha (vc4)
@@ -97,7 +97,7 @@ package starlingEx.styles {
 					);
 				}
 				/// *** FRAGMENT SHADER ***
-				var fragmentShader:Vector.<String> = new <String>[
+				const fragmentShader:Vector.<String> = new <String>[
 					// create basic inner area
 					tex("ft0", "v0", 0, texture),     // ft0 = texture color
 					_multiChannel ? median("ft0") : "mov ft0, ft0.xxxx",
@@ -148,8 +148,8 @@ package starlingEx.styles {
 				vertexFormat.setVertexBufferAt(3, vertexBuffer, "basic");
 				vertexFormat.setVertexBufferAt(4, vertexBuffer, "extended");
 				vertexFormat.setVertexBufferAt(5, vertexBuffer, "outerColor");
-				var pixelWidth:Number  = 1.0 / (texture.root.nativeWidth  / texture.scale);
-				var pixelHeight:Number = 1.0 / (texture.root.nativeHeight / texture.scale);
+				const pixelWidth:Number  = 1.0 / (texture.root.nativeWidth  / texture.scale),
+					pixelHeight:Number = 1.0 / (texture.root.nativeHeight / texture.scale);
 				sVector[0] = MAX_OUTER_OFFSET * pixelWidth;
 				sVector[1] = MAX_OUTER_OFFSET * pixelHeight;
 				sVector[2] = MAX_SCALE;
