@@ -6,7 +6,6 @@
 package starlingEx.display {
 
 	import starling.display.DisplayObject;
-	import starling.display.DisplayObjectContainer;
 	import starling.display.Sprite3D;
 	import starlingEx.display.ApertureObject;
 	import starlingEx.display.ApertureUtils;
@@ -55,7 +54,7 @@ package starlingEx.display {
 		public function getMultAO():ApertureObject {return mult_AO;}
 		public function setAperture(decimal:Number,apply:Boolean=true):void {
 			if (decimal < 0 || decimal > 1) return;
-			var roundInt:uint = Math.round(decimal*255);
+			const roundInt:uint = Math.round(decimal*255);
 			setRGB(roundInt,roundInt,roundInt,apply);
 		}
 		public function set apertureLock(boolean:Boolean):void {_apertureLock = boolean;}
