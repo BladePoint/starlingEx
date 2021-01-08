@@ -52,7 +52,7 @@ package starlingEx.styles {
 			outerMult_AO = ApertureObject.getInstance(0x000000);
 		}
 		override public function copyFrom(meshStyle:MeshStyle):void {
-			var otherStyle:ApertureDistanceFieldStyle = meshStyle as ApertureDistanceFieldStyle;
+			const otherStyle:ApertureDistanceFieldStyle = meshStyle as ApertureDistanceFieldStyle;
 			if (otherStyle) {
 				_mode = otherStyle._mode;
 				_multiChannel = otherStyle._multiChannel;
@@ -100,7 +100,7 @@ package starlingEx.styles {
 		}
 		public function setAperture(decimal:Number,apply:Boolean=true):void {
 			if (decimal < 0 || decimal > 1) return;
-			var roundInt:uint = Math.round(decimal*255);
+			const roundInt:uint = Math.round(decimal*255);
 			setRGB(roundInt,roundInt,roundInt,apply);
 		}
 		public function set apertureLock(boolean:Boolean):void {_apertureLock = boolean;}
@@ -115,63 +115,63 @@ package starlingEx.styles {
 		}
 		private function updateVertices():void {
 			if (vertexData == null) return;
-			var numVertices:int = vertexData.numVertices;
-			var maxScale:int = DistanceFieldEffect.MAX_SCALE;
-			var maxOuterOffset:int = DistanceFieldEffect.MAX_OUTER_OFFSET;
-			var encodedOuterOffsetX:Number = (_shadowOffsetX + maxOuterOffset) / (2 * maxOuterOffset);
-			var encodedOuterOffsetY:Number = (_shadowOffsetY + maxOuterOffset) / (2 * maxOuterOffset);
-			var basic:uint = (uint(_threshold      * 255)      ) |
+			const numVertices:int = vertexData.numVertices;
+			const maxScale:int = DistanceFieldEffect.MAX_SCALE;
+			const maxOuterOffset:int = DistanceFieldEffect.MAX_OUTER_OFFSET;
+			const encodedOuterOffsetX:Number = (_shadowOffsetX + maxOuterOffset) / (2 * maxOuterOffset);
+			const encodedOuterOffsetY:Number = (_shadowOffsetY + maxOuterOffset) / (2 * maxOuterOffset);
+			const basic:uint = (uint(_threshold      * 255)      ) |
 							 (uint(_alpha          * 255) <<  8) |
 							 (uint(_softness / 2.0 * 255) << 16) |
 							 (uint(1.0 / maxScale  * 255) << 24);
-			var extended:uint = (uint(_outerThreshold     * 255)      ) |
+			const extended:uint = (uint(_outerThreshold     * 255)      ) |
 								(uint(_outerAlphaEnd      * 255) <<  8) |
 								(uint(encodedOuterOffsetX * 255) << 16) |
 								(uint(encodedOuterOffsetY * 255) << 24);
-			var outerColor:uint = (outerMult_AO.r			  ) |
+			const outerColor:uint = (outerMult_AO.r			  ) |
 								  (outerMult_AO.g		 <<  8) |
 								  (outerMult_AO.b		 << 16) |
 								  (uint(_outerAlphaStart * 255) << 24);
 			for (var i:int=0; i<numVertices; ++i) {
-				vertexData.setUnsignedInt(i, "basic", basic);
-				vertexData.setUnsignedInt(i, "extended", extended);
-				vertexData.setUnsignedInt(i, "outerColor", outerColor);
+				vertexData.setUnsignedInt(i,"basic",basic);
+				vertexData.setUnsignedInt(i,"extended",extended);
+				vertexData.setUnsignedInt(i,"outerColor",outerColor);
 			}
 			setVertexDataChanged();
 		}
 		override public function batchVertexData(targetStyle:MeshStyle,targetVertexID:int=0,matrix:Matrix=null,vertexID:int=0,numVertices:int=-1):void {
 			super.batchVertexData(targetStyle,targetVertexID,matrix,vertexID,numVertices);
 			if (matrix) {
-				var scale:Number = Math.sqrt(matrix.a*matrix.a + matrix.c*matrix.c);
+				const scale:Number = Math.sqrt(matrix.a*matrix.a + matrix.c*matrix.c);
 				if (!MathUtil.isEquivalent(scale,1.0,0.01)) {
-					var targetVertexData:VertexData = (targetStyle as ApertureDistanceFieldStyle).vertexData;
-					var maxScale:Number = DistanceFieldEffect.MAX_SCALE;
-					var minScale:Number = maxScale / 255;
+					const targetVertexData:VertexData = (targetStyle as ApertureDistanceFieldStyle).vertexData;
+					const maxScale:Number = DistanceFieldEffect.MAX_SCALE;
+					const minScale:Number = maxScale / 255;
 					if (numVertices < 0) numVertices = vertexData.numVertices - vertexID;
 					for (var i:int=0; i<numVertices; ++i) {
-						var srcAttr:uint = vertexData.getUnsignedInt(vertexID+i,"basic");
-						var srcScale:Number = ((srcAttr >> 24) & 0xff) / 255.0 * maxScale;
-						var tgtScale:Number = MathUtil.clamp(srcScale*scale,minScale,maxScale);
-                        var tgtAttr:uint = (srcAttr & 0x00ffffff) | (uint(tgtScale/maxScale*255) << 24);
+						const srcAttr:uint = vertexData.getUnsignedInt(vertexID+i,"basic");
+						const srcScale:Number = ((srcAttr >> 24) & 0xff) / 255.0 * maxScale;
+						const tgtScale:Number = MathUtil.clamp(srcScale*scale,minScale,maxScale);
+						const tgtAttr:uint = (srcAttr & 0x00ffffff) | (uint(tgtScale/maxScale*255) << 24);
                         targetVertexData.setUnsignedInt(targetVertexID+i,"basic",tgtAttr);
 					}
 				}
 			}
 		}
 		override public function updateEffect(effect:MeshEffect,state:RenderState):void {
-			var dfEffect:DistanceFieldEffect = effect as DistanceFieldEffect;
+			const dfEffect:DistanceFieldEffect = effect as DistanceFieldEffect;
 			dfEffect.mode = _mode;
 			dfEffect.multiChannel = _multiChannel;
 			if (state.is3D) dfEffect.scale = 1.0;
 			else {
-				var matrix:Matrix = state.modelviewMatrix;
-				var scale:Number = Math.sqrt(matrix.a*matrix.a + matrix.c*matrix.c);
+				const matrix:Matrix = state.modelviewMatrix;
+				const scale:Number = Math.sqrt(matrix.a*matrix.a + matrix.c*matrix.c);
 				dfEffect.scale = scale * Starling.contentScaleFactor;
 			}
 			super.updateEffect(effect, state);
 		}
 		override public function canBatchWith(meshStyle:MeshStyle):Boolean {
-			var adfStyle:ApertureDistanceFieldStyle = meshStyle as ApertureDistanceFieldStyle;
+			const adfStyle:ApertureDistanceFieldStyle = meshStyle as ApertureDistanceFieldStyle;
 			if (adfStyle && super.canBatchWith(meshStyle)) return adfStyle._mode == _mode && adfStyle._multiChannel == _multiChannel;
 			else return false;
 		}
@@ -286,6 +286,7 @@ package starlingEx.styles {
 		public function dispose():void {
 			ApertureObject.putInstance(outerTrue_AO);
 			ApertureObject.putInstance(outerMult_AO);
+			outerTrue_AO = outerMult_AO = null;
 		}
 
 	}
