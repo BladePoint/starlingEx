@@ -56,7 +56,7 @@ package starlingEx.display {
 			mouseOut();
 		}
 		private function onTouch(evt:TouchEvent):void {
-			var touch:Touch = evt.getTouch(this,null);
+			const touch:Touch = evt.getTouch(this,null);
 			if (touch == null) mouseOut();
 			else {
 				if (touch.phase == TouchPhase.HOVER) mouseOver();
@@ -84,7 +84,7 @@ package starlingEx.display {
 			else if (!hover && withinBounds) mouseOver();
 		}
 		protected function mouseDown(touchEvent:TouchEvent,touch:Touch):void {
-			var displayObject:DisplayObject = touchEvent.target as DisplayObject;
+			const displayObject:DisplayObject = touchEvent.target as DisplayObject;
 			displayObject.getBounds(stage,triggerBounds);
 		}
 		private function mouseUp(touch:Touch):void {
