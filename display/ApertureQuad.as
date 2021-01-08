@@ -5,14 +5,12 @@
 
 package starlingEx.display {
 
-	import starling.display.DisplayObjectContainer;
 	import starling.display.Quad;
-	import starling.utils.Color;
 	import starlingEx.display.ApertureObject;
-	import starlingEx.display.ApertureSprite;
 	import starlingEx.display.ApertureUtils;
 	import starlingEx.display.IAperture;
 	import starlingEx.display.IApertureMesh;
+	import starlingEx.styles.ApertureDistanceFieldStyle;
 	import starlingEx.utils.PoolEx;
 
 	/* An ApertureQuad will have its colors modified when the parent ApertureSprite's color is modified. */
@@ -184,7 +182,7 @@ package starlingEx.display {
 		public function multiplyColor():void {
 			ApertureUtils.multiplyVertex(this,vertexV);
 			if (style is IAperture) {
-				var iAperture:IAperture = style as IAperture;
+				const iAperture:IAperture = style as IAperture;
 				iAperture.multiplyColor();
 			}
 		}
@@ -221,6 +219,10 @@ package starlingEx.display {
 			ApertureObject.putVector(multV);
 			trueV = multV = null;
 			texture = null;
+			if (style is ApertureDistanceFieldStyle) {
+				const adfs:ApertureDistanceFieldStyle = style as ApertureDistanceFieldStyle;
+				adfs.dispose();
+			}
 			super.dispose();
 		}
 	}
