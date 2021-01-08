@@ -5,7 +5,6 @@
 
 package starlingEx.display {
 
-	import starling.display.DisplayObjectContainer;
 	import starlingEx.display.ApertureObject;
 
 	public interface IAperture {
