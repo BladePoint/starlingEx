@@ -10,7 +10,7 @@ package starlingEx.animation {
 
 	/* A Tween extension that allows pooling and easy tweening of numbers without having to create an object. */
 	public class TweenEx extends Tween {
-		static private var instancePool:Vector.<TweenEx> = new <TweenEx>[];
+		static private const instancePool:Vector.<TweenEx> = new <TweenEx>[];
 		static public function getInstance(target:Object,time:Number,transition:Object="linear"):TweenEx {
 			if (instancePool.length == 0) return new TweenEx(target,time,transition);
 			else {
