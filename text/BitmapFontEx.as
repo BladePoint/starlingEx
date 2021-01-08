@@ -28,6 +28,8 @@ package starlingEx.text {
 	import starlingEx.textures.TextureBitmapData;
 	import starlingEx.utils.RectanglePacker;
 
+	/* A BitmapFontEx is a class for bitmap fonts to be used with TextFieldEx. Multiple BitmapFontEx instances can be used with a single DynamicAtlas
+	   in order to reduce draw calls. Some of this code is appropriated from starling.text.BitmapFont. */
 	public class BitmapFontEx implements IFont {
 
 		public var threshold:Number = Compositor.defaultThreshold;
@@ -40,6 +42,8 @@ package starlingEx.text {
 		private var dynamicAtlas:DynamicAtlas;
 		private var fontTexture:Texture, whiteTexture:Texture;
 		private var fontBitmapData:BitmapData;
+
+		/* Pass a string of only the characters you wish to use, or use the default value if you want to use all the characters. */
 		public function BitmapFontEx(characters:String="") {
 			_characters = characters;
 			_chars = new Dictionary();
@@ -49,12 +53,15 @@ package starlingEx.text {
 			addMissing();
 			addQuadless();
 		}
+		/* Initialize with a Texture and XML. A DynamicAtlas cannot be used if you initialize with a Texture.*/
 		public function initTexture(fontAtlasTexture:Texture,fontXML:XML):void {
 			parseXmlData(fontXML);
 			initCharFunction = initCharTexture;
 			fontTexture = fontAtlasTexture;
 			parseXmlChar(fontXML);
 		}
+		/* Initialize with a BitmapData and XML. Pass a dynamicAtlas for the 3rd parameter if you wish for this
+		   BitmapFontEx to be included in it. */
 		public function initBitmapData(fontAtlas_BMD:BitmapData,fontXML:XML,dynamicAtlas:DynamicAtlas=null):void {
 			if (dynamicAtlas) {
 				fontBitmapData = fontAtlas_BMD;
@@ -69,6 +76,8 @@ package starlingEx.text {
 				initTexture(texture,fontXML);
 			}
 		}
+		/* Initialize with a Bitmap class and XML. Pass a dynamicAtlas for the 3rd parameter if you wish for this
+		BitmapFontEx to be included in it. */
 		public function initBitmapClass(fontAtlasBitmapClass:Class,fontXML:XML,dynamicAtlas:DynamicAtlas=null):void {
 			if (dynamicAtlas) {
 				const bitmap:Bitmap = new fontAtlasBitmapClass();
