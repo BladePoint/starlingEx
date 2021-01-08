@@ -10,6 +10,7 @@ package starlingEx.text {
 	import starlingEx.text.IFont;
 	import starlingEx.textures.TextureBitmapData;
 
+	/* A helper class for arranging characters in a TextFieldEx by the Compositor class. */
 	public class BitmapCharEx {
 
 		private var _iFont:IFont;
