@@ -6,7 +6,6 @@
 package starlingEx.display {
 
 	import starling.display.DisplayObject;
-	import starling.display.DisplayObjectContainer;
 	import starling.display.Sprite;
 	import starlingEx.display.ApertureObject;
 	import starlingEx.display.ApertureUtils;
