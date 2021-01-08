@@ -10,7 +10,7 @@ package starlingEx.display {
 	/* An ApertureObject stores color data in both RGB and hexadecimal formats. */
 	public class ApertureObject {
 		static private const argumentErrorString:String = "ApertureObject must have 0, 1, or 3 arguments which are non-negative."
-		static private var instancePool:Vector.<ApertureObject> = new <ApertureObject>[];
+		static private const instancePool:Vector.<ApertureObject> = new <ApertureObject>[];
 		static public function getInstance(p1:int=-1,p2:int=-1,p3:int=-1):ApertureObject {
 			var apertureObject:ApertureObject;
 			if (instancePool.length == 0) apertureObject = new ApertureObject(p1,p2,p3);
@@ -23,7 +23,7 @@ package starlingEx.display {
 		static public function putInstance(apertureObject:ApertureObject):void {
 			if (apertureObject) instancePool[instancePool.length] = apertureObject;
 		}
-		static private var vectorPool:Array = [];
+		static private const vectorPool:Array = [];
 		static public function getVector():Vector.<ApertureObject> {
 			var vector:Vector.<ApertureObject>;
 			if (vectorPool.length == 0) vector = new <ApertureObject>[];
