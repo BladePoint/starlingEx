@@ -5,14 +5,10 @@
 
 package starlingEx.text {
 
-	import starling.events.Touch;
-	import starling.utils.Pool;
 	import starlingEx.display.ApertureQuad;
 	import starlingEx.display.ApertureSprite;
 	import starlingEx.display.ButtonEx;
 	import starlingEx.text.CharLocation;
-	import starlingEx.utils.PoolEx;
-	import flash.geom.Rectangle;
 
 	/* Clickable TextLinks are created when parsing link tags in an ApertureTextField. */
 	public class TextLink extends ButtonEx {
@@ -30,13 +26,13 @@ package starlingEx.text {
 			defaultHoverOutlineColor:uint = defaultHoverHex;
 		static public var defaultNormalWidth:Number = 0,
 			defaultHoverWidth:Number = 0;
-		static private var textLinkV:Vector.<TextLink> = new <TextLink>[];
-		static public function getInstance(rowH:Number,hitboxH:Number,normalTopLeft:int=-1,normalTopRight:int=-1,normalBottomLeft:int=-1,normalBottomRight:int=-1,normalOutlineColor:int=-1,hoverTopLeft:int=-1,hoverTopRight:int=-1,hoverBottomLeft:int=-1,hoverBottomRight:int=-1,hoverOutlineColor:int=-1,normalOutlineWidth:Number=-1,hoverOutlineWidth:Number=-1):TextLink {
+		static private const textLinkV:Vector.<TextLink> = new <TextLink>[];
+		static public function getInstance(size:Number,underlineProportion:Number,normalTopLeft:int=-1,normalTopRight:int=-1,normalBottomLeft:int=-1,normalBottomRight:int=-1,normalOutlineColor:int=-1,hoverTopLeft:int=-1,hoverTopRight:int=-1,hoverBottomLeft:int=-1,hoverBottomRight:int=-1,hoverOutlineColor:int=-1,normalOutlineWidth:Number=-1,hoverOutlineWidth:Number=-1):TextLink {
 			var textLink:TextLink;
-			if (textLinkV.length == 0) textLink = new TextLink(rowH,hitboxH,normalTopLeft,normalTopRight,normalBottomLeft,normalBottomRight,normalOutlineColor,hoverTopLeft,hoverTopRight,hoverBottomLeft,hoverBottomRight,hoverOutlineColor,normalOutlineWidth,hoverOutlineWidth);
+			if (textLinkV.length == 0) textLink = new TextLink(size,underlineProportion,normalTopLeft,normalTopRight,normalBottomLeft,normalBottomRight,normalOutlineColor,hoverTopLeft,hoverTopRight,hoverBottomLeft,hoverBottomRight,hoverOutlineColor,normalOutlineWidth,hoverOutlineWidth);
 			else {
 				textLink = textLinkV.pop();
-				textLink.init(rowH,hitboxH,normalTopLeft,normalTopRight,normalBottomLeft,normalBottomRight,normalOutlineColor,hoverTopLeft,hoverTopRight,hoverBottomLeft,hoverBottomRight,hoverOutlineColor,normalOutlineWidth,hoverOutlineWidth);
+				textLink.init(size,underlineProportion,normalTopLeft,normalTopRight,normalBottomLeft,normalBottomRight,normalOutlineColor,hoverTopLeft,hoverTopRight,hoverBottomLeft,hoverBottomRight,hoverOutlineColor,normalOutlineWidth,hoverOutlineWidth);
 			}
 			return textLink;
 		}
@@ -46,7 +42,7 @@ package starlingEx.text {
 				textLinkV[textLinkV.length] = textLink;
 			}
 		}
-		static private var vectorPool:Array = [];
+		static private const vectorPool:Array = [];
 		static public function getVector():Vector.<TextLink> {
 			var vector:Vector.<TextLink>;
 			if (vectorPool.length == 0) vector = new <TextLink>[];
@@ -59,7 +55,7 @@ package starlingEx.text {
 				vectorPool[vectorPool.length] = vector;
 			}
 		}
-		static private var hitboxV:Vector.<ApertureQuad> = new <ApertureQuad>[];
+		static private const hitboxV:Vector.<ApertureQuad> = new <ApertureQuad>[];
 		static private function getHitbox(w:Number,h:Number):ApertureQuad {
 			var hitbox_AQ:ApertureQuad;
 			if (hitboxV.length == 0) hitbox_AQ = new ApertureQuad(w,h);
@@ -78,21 +74,20 @@ package starlingEx.text {
 		public var charLocationV:Vector.<CharLocation>;
 		public var getTextLineQuad:Function, putTextLineQuad:Function;
 		public var multiChannel:Boolean;
-		private var rowH:Number, hitboxH:Number, normalOutlineWidth:Number, hoverOutlineWidth:Number;
+		private var aboveLineH:Number, normalOutlineWidth:Number, hoverOutlineWidth:Number;
 		private var normalTopLeft:uint, normalTopRight:uint, normalBottomLeft:uint, normalBottomRight:uint,
 			hoverTopLeft:uint, hoverTopRight:uint, hoverBottomLeft:uint, hoverBottomRight:uint,
 			normalOutlineColor:uint, hoverOutlineColor:uint;
 		private var hitbox_AS:ApertureSprite;
-		public function TextLink(rowH:Number,hitboxH:Number,normalTopLeft:int=-1,normalTopRight:int=-1,normalBottomLeft:int=-1,normalBottomRight:int=-1,normalOutlineColor:int=-1,hoverTopLeft:int=-1,hoverTopRight:int=-1,hoverBottomLeft:int=-1,hoverBottomRight:int=-1,hoverOutlineColor:int=-1,normalOutlineWidth:Number=-1,hoverOutlineWidth:Number=-1) {
-			init(rowH,hitboxH,normalTopLeft,normalTopRight,normalBottomLeft,normalBottomRight,normalOutlineColor,hoverTopLeft,hoverTopRight,hoverBottomLeft,hoverBottomRight,hoverOutlineColor,normalOutlineWidth,hoverOutlineWidth);
+		public function TextLink(size:Number,underlineProportion:Number,normalTopLeft:int=-1,normalTopRight:int=-1,normalBottomLeft:int=-1,normalBottomRight:int=-1,normalOutlineColor:int=-1,hoverTopLeft:int=-1,hoverTopRight:int=-1,hoverBottomLeft:int=-1,hoverBottomRight:int=-1,hoverOutlineColor:int=-1,normalOutlineWidth:Number=-1,hoverOutlineWidth:Number=-1) {
+			init(size,underlineProportion,normalTopLeft,normalTopRight,normalBottomLeft,normalBottomRight,normalOutlineColor,hoverTopLeft,hoverTopRight,hoverBottomLeft,hoverBottomRight,hoverOutlineColor,normalOutlineWidth,hoverOutlineWidth);
 			hitbox_AS = new ApertureSprite();
 			hitbox_AS.alpha = 0;
 			super(hitbox_AS,null);
 			disableOnClick = false;
 		}
-		private function init(rowH:Number,hitboxH:Number,normalTopLeft:int,normalTopRight:int,normalBottomLeft:int,normalBottomRight:int,normalOutlineColor:int,hoverTopLeft:int,hoverTopRight:int,hoverBottomLeft:int,hoverBottomRight:int,hoverOutlineColor:int,normalOutlineWidth:Number,hoverOutlineWidth:Number):void {
-			this.rowH = rowH;
-			this.hitboxH = hitboxH;
+		private function init(size:Number,underlineProportion:Number,normalTopLeft:int,normalTopRight:int,normalBottomLeft:int,normalBottomRight:int,normalOutlineColor:int,hoverTopLeft:int,hoverTopRight:int,hoverBottomLeft:int,hoverBottomRight:int,hoverOutlineColor:int,normalOutlineWidth:Number,hoverOutlineWidth:Number):void {
+			aboveLineH = size * underlineProportion;
 			this.normalTopLeft = normalTopLeft >= 0 ? normalTopLeft : defaultNormalTopLeft;
 			this.normalTopRight = normalTopRight >= 0 ? normalTopRight : defaultNormalTopRight;
 			this.normalBottomLeft = normalBottomLeft >= 0 ? normalBottomLeft : defaultNormalBottomLeft;
@@ -116,14 +111,14 @@ package starlingEx.text {
 			}
 		}
 		private function resizeHitbox():void {
-			var charLocation:CharLocation = charLocationV[0];
-			var textLineA:Array = charLocation.innerLinkA;
-			var l:uint = textLineA.length;
+			const charLocation:CharLocation = charLocationV[0];
+			const innerLinkA:Array = charLocation.innerLinkA;
+			const l:uint = innerLinkA.length;
 			for (var i:uint=0; i<l; i++) {
-				var textLine_AQ:ApertureQuad = textLineA[i];
-				var hitbox_AQ:ApertureQuad = getHitbox(textLine_AQ.quadW,hitboxH+textLine_AQ.quadH);
-				hitbox_AQ.x = textLine_AQ.x;
-				hitbox_AQ.y = rowH * (charLocation.rowNumber + i);
+				const line_AQ:ApertureQuad = innerLinkA[i];
+				const hitbox_AQ:ApertureQuad = getHitbox(line_AQ.quadW,aboveLineH+line_AQ.quadH);
+				hitbox_AQ.x = line_AQ.x;
+				hitbox_AQ.y = line_AQ.y - aboveLineH;
 				hitbox_AS.addChild(hitbox_AQ);
 			}
 		}
@@ -140,9 +135,9 @@ package starlingEx.text {
 				bottomLeft = hoverBottomLeft;
 				bottomRight = hoverBottomRight;
 			}
-			var l:uint = charLocationV.length;
+			const l:uint = charLocationV.length;
 			for (var i:uint=0; i<l; i++) {
-				var charLocation:CharLocation = charLocationV[i];
+				const charLocation:CharLocation = charLocationV[i];
 				charLocation.updateColor(topLeft,topRight,bottomLeft,bottomRight,true);
 			}
 		}
@@ -166,24 +161,24 @@ package starlingEx.text {
 			
 		}
 		private function updateOutlineColor(outlineColor:uint):void {
-			var l:uint = charLocationV.length;
+			const l:uint = charLocationV.length;
 			for (var i:uint=0; i<l; i++) {
-				var charLocation:CharLocation = charLocationV[i];
+				const charLocation:CharLocation = charLocationV[i];
 				charLocation.updateOutlineColor(outlineColor,true);
 			}
 		}
 		private function updateOutlineWidth(outlineWidth:Number):void {
-			var l:uint = charLocationV.length;
+			const l:uint = charLocationV.length;
 			for (var i:uint=0; i<l; i++) {
-				var charLocation:CharLocation = charLocationV[i];
-				charLocation.updateOutlineWidth(outlineWidth,getTextLineQuad,putTextLineQuad,multiChannel);
+				const charLocation:CharLocation = charLocationV[i];
+				charLocation.updateOutlineWidth(outlineWidth);
 			}
 		}
 		private function setupOutline(outlineColor:uint,outlineWidth:Number):void {
-			var l:uint = charLocationV.length;
+			const l:uint = charLocationV.length;
 			for (var i:uint=0; i<l; i++) {
-				var charLocation:CharLocation = charLocationV[i];
-				charLocation.setupOutline(outlineColor,outlineWidth,getTextLineQuad,putTextLineQuad,multiChannel);
+				const charLocation:CharLocation = charLocationV[i];
+				charLocation.setupOutline(outlineColor,outlineWidth);
 			}
 		}
 		override protected function mouseOutMethod():void {
@@ -198,7 +193,7 @@ package starlingEx.text {
 			CharLocation.putVector(charLocationV);
 			charLocationV = null;
 			while (hitbox_AS.numChildren > 0) {
-				var hitbox_AQ:ApertureQuad = hitbox_AS.getChildAt(0) as ApertureQuad;
+				const hitbox_AQ:ApertureQuad = hitbox_AS.getChildAt(0) as ApertureQuad;
 				hitbox_AS.removeChild(hitbox_AQ);
 				putHitbox(hitbox_AQ);
 			}
@@ -210,7 +205,6 @@ package starlingEx.text {
 			hitbox_AS = null;
 			super.dispose();
 		}
-
 	}
 
 }
