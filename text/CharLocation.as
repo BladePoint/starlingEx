@@ -34,7 +34,6 @@ package starlingEx.text {
 		static public function putInstance(charLocation:CharLocation):void {
 			if (charLocation) {
 				charLocation.reset();
-				charLocation.dispose();
 				instancePool[instancePool.length] = charLocation;
 			}
 		}
@@ -547,15 +546,11 @@ package starlingEx.text {
 			return _shadowQuad;
 		}
 		public function reset():void {
+			char = null;
 			scale = x = y = tagScale = NaN;
 			rowNumber = 0;
 			endOfLine = false;
-		}
-		public function dispose():void {
 			const iFont:IFont = char.font;
-			char = null;
-			textFormat = null;
-			tagObject = null;
 			clearTextLineArray(outerStrikethroughA,iFont);
 			PoolEx.putArray(outerStrikethroughA);
 			clearTextLineArray(innerStrikethroughA,iFont);
@@ -578,6 +573,8 @@ package starlingEx.text {
 				outerUnderlineA = innerUnderlineA = shadowUnderlineA =
 				outerLinkA = innerLinkA = shadowLinkA = null;
 			textLink = null;
+			textFormat = null;
+			tagObject = null;
 			if (_quad) {
 				_quad.removeFromParent();
 				iFont.putCharQuad(_quad);
@@ -587,6 +584,9 @@ package starlingEx.text {
 				iFont.putCharQuad(_shadowQuad);
 			}
 			_quad = _shadowQuad = null;
+		}
+		public function dispose():void {
+			reset();
 		}
 
 	}
