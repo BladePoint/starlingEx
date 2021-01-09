@@ -12,6 +12,22 @@ package starlingEx.text {
 
 	/* A helper class for arranging characters in a TextFieldEx by the Compositor class. */
 	public class BitmapCharEx {
+		static private const instancePool:Vector.<BitmapCharEx> = new <BitmapCharEx>[];
+		static public function getInstance(iFont:IFont,id:int,xOffset:Number,yOffset:Number,xAdvance:Number):BitmapCharEx {
+			var bitmapChar:BitmapCharEx;
+			if (instancePool.length == 0) bitmapChar = new BitmapCharEx(iFont,id,xOffset,yOffset,xAdvance);
+			else {
+				bitmapChar = instancePool.pop();
+				bitmapChar.init(iFont,id,xOffset,yOffset,xAdvance);
+			}
+			return bitmapChar;
+		}
+		static public function putInstance(bitmapChar:BitmapCharEx):void {
+			if (bitmapChar) {
+				bitmapChar.dispose();
+				instancePool[instancePool.length] = bitmapChar;
+			}
+		}
 
 		private var _iFont:IFont;
 		private var _charID:int;
@@ -22,12 +38,14 @@ package starlingEx.text {
 		private var _texture:Texture;
 		private var _kernings:Dictionary;
 		public function BitmapCharEx(iFont:IFont,id:int,xOffset:Number,yOffset:Number,xAdvance:Number) {
+			init(iFont,id,xOffset,yOffset,xAdvance);
+		}
+		private function init(iFont:IFont,id:int,xOffset:Number,yOffset:Number,xAdvance:Number):void {
 			_iFont = iFont;
 			_charID = id;
 			_xOffset = xOffset;
 			_yOffset = yOffset;
 			_xAdvance = xAdvance;
-			_kernings = null;
 		}
 		public function initTexture(texture:Texture):void {
 			_texture = texture;
@@ -68,6 +86,16 @@ package starlingEx.text {
 				if (_textureBitmapData.quadH == 0) _textureBitmapData.calcQuadDimensions();
 				return _textureBitmapData.quadH;
 			} else return 0;
+		}
+		public function dispose():void {
+			_iFont = null;
+			_textureBitmapData = null;
+			_texture = null;
+			if (_kernings) {
+				for (var charID:int in _kernings) {
+					delete _kernings[charID];
+				}
+			}
 		}
 	}
 
