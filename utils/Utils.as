@@ -19,10 +19,17 @@ package starlingEx.utils {
 			}
 			return result;
 		}
+		/* Shallow copy an array. */
+		static public function copyArray(sourceA:Array,targetA:Array):void {
+			if (sourceA && targetA) {
+				const l:uint = sourceA.length;
+				for (var i:uint=0; i<l; i++) {targetA[i] = sourceA[i];}
+			}
+		}
 		static public function deleteObject(object:Object,recurse:Boolean=true):void {
 			for (var property:String in object) {
 				if (recurse && object[property] is Object) {
-					var nestedObject:Object = object[property] as Object;
+					const nestedObject:Object = object[property] as Object;
 					if (nestedObject.constructor == Object) deleteObject(nestedObject);
 				} 
 				delete object[property];
