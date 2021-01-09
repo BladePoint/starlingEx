@@ -27,13 +27,6 @@ package starlingEx.animation {
 		public function TweenObject(initialT:Number=0) {
 			t = initialT;
 		}
-		public function reset():void {
-			
-		}
-		public function dispose():void {
-			
-		}
-
 	}
 
 }
