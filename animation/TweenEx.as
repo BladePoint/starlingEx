@@ -21,7 +21,7 @@ package starlingEx.animation {
 		}
 		static public function putInstance(tween:TweenEx):void {
 			if (tween) {
-				tween.dispose();
+				tween.reset(null,0);
 				instancePool[instancePool.length] = tween;
 			}
 		}
@@ -49,6 +49,7 @@ package starlingEx.animation {
 				disposeTweenObject();
 				super.reset(target,time,transition);
 			}
+			removeEventListeners();
 			return this;
 		}
 		private function disposeTweenObject():void {
@@ -58,9 +59,7 @@ package starlingEx.animation {
 			}
 		}
 		public function dispose():void {
-			disposeTweenObject();
 			reset(null,0);
-			removeEventListeners();
 		}
 
 	}
