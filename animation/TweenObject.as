@@ -17,12 +17,21 @@ package starlingEx.animation {
 			}
 		}
 		static public function putInstance(tweenObject:TweenObject):void {
-			if (tweenObject) instancePool[instancePool.length] = tweenObject;
+			if (tweenObject) {
+				tweenObject.reset();
+				instancePool[instancePool.length] = tweenObject;
+			}
 		}
 
 		public var t:Number;
 		public function TweenObject(initialT:Number=0) {
 			t = initialT;
+		}
+		public function reset():void {
+			
+		}
+		public function dispose():void {
+			
 		}
 
 	}
