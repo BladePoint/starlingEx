@@ -203,6 +203,7 @@ package starlingEx.text {
 						current_CL = CharLocation.getInstance(bitmapChar,textFormat,tagObject);
 						current_CL.x = currentX + bitmapChar.xOffset * tagScale;
 						current_CL.y = currentY + bitmapChar.yOffset * tagScale + formatFontLineHeight * (1-tagScale) * getBaselineProportion(iFont);
+						current_CL.rowY = currentY;
 						current_CL.scale = current_CL.tagScale = tagScale;
 						currentLine[currentLine.length] = current_CL;
 						currentX += bitmapChar.xAdvance * tagScale;
@@ -271,9 +272,9 @@ package starlingEx.text {
 				else if (hAlign == Align.CENTER) xOffset = (containerWidth - right) / 2;
 				for (var c:int=0; c<numChars; ++c) {
 					current_CL = line[c];
-					current_CL.rowNumber = lineID;
 					current_CL.x = scale * (current_CL.x + xOffset + formatFontOffsetX) + padding;
 					current_CL.y = scale * (current_CL.y + yOffset + formatFontOffsetY) + padding;
+					current_CL.rowY = scale * (current_CL.rowY + yOffset + formatFontOffsetY) + padding;
 					current_CL.scale *= scale;
 					finalLocations[finalLocations.length] = current_CL;
 				}
