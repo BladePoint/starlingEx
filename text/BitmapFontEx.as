@@ -31,6 +31,22 @@ package starlingEx.text {
 	/* A BitmapFontEx is a class for bitmap fonts to be used with TextFieldEx. Multiple BitmapFontEx instances can be used with a single DynamicAtlas
 	   in order to reduce draw calls. Some of this code is appropriated from starling.text.BitmapFont. */
 	public class BitmapFontEx implements IFont {
+		static private const instancePool:Vector.<BitmapFontEx> = new <BitmapFontEx>[];
+		static public function getInstance(characters:String=""):BitmapFontEx {
+			var bitmapFont:BitmapFontEx;
+			if (instancePool.length == 0) bitmapFont = new BitmapFontEx(characters);
+			else {
+				bitmapFont = instancePool.pop();
+				bitmapFont.init(characters);
+			}
+			return bitmapFont;
+		}
+		static public function putInstance(bitmapFont:BitmapFontEx):void {
+			if (bitmapFont) {
+				bitmapFont.reset();
+				instancePool[instancePool.length] = bitmapFont;
+			}
+		}
 
 		public var threshold:Number = Compositor.defaultThreshold;
 		public var whiteX:int = -1, whiteY:int = -1;
@@ -45,13 +61,28 @@ package starlingEx.text {
 
 		/* Pass a string containing the characters you wish to use, or use the default value if you want to use all the characters. */
 		public function BitmapFontEx(characters:String="") {
+			init(characters);
+		}
+		private function init(characters:String=""):void {
 			_characters = characters;
-			_chars = new Dictionary();
 			_offsetX = _offsetY = _padding = 0.0;
-			charQuadV = new <ApertureQuad>[];
-			lineQuadV = new <ApertureQuad>[];
 			addMissing();
 			addQuadless();
+			if (charQuadV == null) charQuadV = new <ApertureQuad>[];
+			if (lineQuadV == null) lineQuadV = new <ApertureQuad>[];
+		}
+		private function addMissing():void {
+			addChar(Compositor.CHAR_MISSING,BitmapCharEx.getInstance(this,Compositor.CHAR_MISSING,0,0,0));
+		}
+		private function addQuadless():void {
+			addChar(Compositor.CHAR_NON,BitmapCharEx.getInstance(this,Compositor.CHAR_NON,0,0,0));
+		}
+		private function addChar(charID:int,bitmapChar:BitmapCharEx):void {
+			if (_chars == null) _chars = new Dictionary();
+			_chars[charID] = bitmapChar;
+		}
+		public function getChar(charID:int):BitmapCharEx {
+			return _chars[charID];
 		}
 		/* Initialize with a Texture and XML. A DynamicAtlas cannot be used if you initialize with a Texture.*/
 		public function initTexture(fontAtlasTexture:Texture,fontXML:XML):void {
@@ -131,37 +162,24 @@ package starlingEx.text {
 				const xOffset:Number = parseFloat(xml.@xoffset);
 				const yOffset:Number = parseFloat(xml.@yoffset);
 				const xAdvance:Number = parseFloat(xml.@xadvance);
-				initCharFunction(id,x,y,width,height,xOffset,yOffset,xAdvance);
+				const bitmapChar:BitmapCharEx = BitmapCharEx.getInstance(this,id,xOffset,yOffset,xAdvance);
+				initCharFunction(id,x,y,width,height,bitmapChar);
 			}
 		}
-		private function initCharTexture(id:int,x:Number,y:Number,width:Number,height:Number,xOffset:Number,yOffset:Number,xAdvance:Number):void {
-			const bitmapChar:BitmapCharEx = new BitmapCharEx(this,id,xOffset,yOffset,xAdvance);
+		private function initCharTexture(id:int,x:Number,y:Number,width:Number,height:Number,bitmapChar:BitmapCharEx):void {
 			const region:Rectangle = Pool.getRectangle(x,y,width,height);
 			const texture:Texture = Texture.fromTexture(fontTexture,region);
 			Pool.putRectangle(region);
 			bitmapChar.initTexture(texture);
 			addChar(id,bitmapChar);
 		}
-		private function initCharTextureBitmap(id:int,x:Number,y:Number,width:Number,height:Number,xOffset:Number,yOffset:Number,xAdvance:Number):void {
-			const bitmapChar:BitmapCharEx = new BitmapCharEx(this,id,xOffset,yOffset,xAdvance);
+		private function initCharTextureBitmap(id:int,x:Number,y:Number,width:Number,height:Number,bitmapChar:BitmapCharEx):void {
 			const textureBitmapData:TextureBitmapData = new TextureBitmapData(fontBitmapData);
 			textureBitmapData.setSourceDimensions(width,height);
 			textureBitmapData.setSourceOffset(x,y);
 			bitmapChar.initTextureBitmap(textureBitmapData);
 			dynamicAtlas.addRectangle(textureBitmapData);
 			addChar(id,bitmapChar);
-		}
-		private function addChar(charID:int,bitmapChar:BitmapCharEx):void {
-			_chars[charID] = bitmapChar;
-		}
-		private function addMissing():void {
-			addChar(Compositor.CHAR_MISSING,new BitmapCharEx(this,Compositor.CHAR_MISSING,0,0,0));
-		}
-		private function addQuadless():void {
-			addChar(Compositor.CHAR_NON,new BitmapCharEx(this,Compositor.CHAR_NON,0,0,0));
-		}
-		public function getChar(charID:int):BitmapCharEx {
-			return _chars[charID];
 		}
 		public function initFormat(format:TextFormatEx):void {
 			if (format.softness >= 0) charQuadFactorySoftness = format.softness;
@@ -281,7 +299,7 @@ package starlingEx.text {
 		private function packFailure(evt:Event):void {
 			removePackListeners();
 			dynamicAtlas = null;
-			for each (var charID:int in _chars) {
+			for (var charID:int in _chars) {
 				const bitmapChar:BitmapCharEx = _chars[charID];
 				const texture:Texture = bitmapChar.texture;
 			}
@@ -297,8 +315,54 @@ package starlingEx.text {
 				fontBitmapData = null;
 			}
 		}
+		public function reset():void {
+			threshold = Compositor.defaultThreshold;
+			whiteX = whiteY = -1;
+			_characters = _name = _smoothing = _type = "";
+			if (_chars) {
+				for (var charID:int in _chars) {
+					const bitmapChar:BitmapCharEx = _chars[charID];
+					if (bitmapChar.textureBitmapData) {
+						const textureBitmapData:TextureBitmapData = bitmapChar.textureBitmapData;
+						if (dynamicAtlas) dynamicAtlas.removeRectangle(textureBitmapData);
+						textureBitmapData.dispose();
+					} else if (bitmapChar.texture) {
+						const texture:Texture = bitmapChar.texture;
+						texture.dispose();
+					}
+					BitmapCharEx.putInstance(bitmapChar);
+					delete _chars[charID];
+				}
+			}
+			_size = _lineHeight = _baseline = _distanceFieldSpread = _italicRadians = _sinItalicRadians = _lineThicknessProportion = _baselineProportion = _underlineProportion = charQuadFactorySoftness = NaN;
+			disposeApertureQuadVector(charQuadV);
+			disposeApertureQuadVector(lineQuadV);
+			initCharFunction = null;
+			dynamicAtlas = null;
+			if (fontTexture) {
+				fontTexture.root.onRestore = null;
+				fontTexture.dispose();
+				fontTexture = null;
+			}
+			if (whiteTexture) {
+				whiteTexture.dispose();
+				whiteTexture = null;
+			}
+			removePackListeners();
+			disposeSourceBitmapData();
+		}
+		private function disposeApertureQuadVector(vector:Vector.<ApertureQuad>):void {
+			const l:uint = vector.length;
+			for (var i:uint=0; i<l; i++) {
+				const apertureQuad:ApertureQuad = vector[i];
+				apertureQuad.dispose();
+			}
+			vector.length = 0;
+		}
 		public function dispose():void {
-			
+			reset();
+			_chars = null;
+			charQuadV = lineQuadV = null;
 		}
 	}
 
