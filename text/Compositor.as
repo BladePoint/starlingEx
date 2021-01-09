@@ -22,7 +22,7 @@ package starlingEx.text {
 	import starlingEx.utils.Utils;
 
 	public class Compositor {
-		static public const defaultItalicRadians:Number = 0.2617993877991494/*15 degrees*/,
+		static public const defaultItalicRadians:Number = 0.2617993877991494, //15 degrees
 			defaultSinItalicRadians:Number = 0.25881904510252074, 
 			defaultThreshold:Number = .5,
 			defaultLineThicknessProportion:Number = .044,
