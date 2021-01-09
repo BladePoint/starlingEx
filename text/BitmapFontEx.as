@@ -26,6 +26,7 @@ package starlingEx.text {
 	import starlingEx.text.TextFormatEx;
 	import starlingEx.textures.DynamicAtlas;
 	import starlingEx.textures.TextureBitmapData;
+	import starlingEx.utils.PoolEx;
 	import starlingEx.utils.RectanglePacker;
 
 	/* A BitmapFontEx is a class for bitmap fonts to be used with TextFieldEx. Multiple BitmapFontEx instances can be used with a single DynamicAtlas
@@ -53,7 +54,7 @@ package starlingEx.text {
 		private var _characters:String, _name:String, _smoothing:String, _type:String;
 		private var _chars:Dictionary;
 		private var _offsetX:Number, _offsetY:Number, _padding:Number, _size:Number, _lineHeight:Number, _baseline:Number, _distanceFieldSpread:Number, _italicRadians:Number, _sinItalicRadians:Number, _lineThicknessProportion:Number, _baselineProportion:Number, _underlineProportion:Number, charQuadFactorySoftness:Number;
-		private var charQuadV:Vector.<ApertureQuad>, lineQuadV:Vector.<ApertureQuad>;
+		private var charQuadA:Array, lineQuadA:Array;
 		private var initCharFunction:Function;
 		private var dynamicAtlas:DynamicAtlas;
 		private var fontTexture:Texture, whiteTexture:Texture;
@@ -68,8 +69,8 @@ package starlingEx.text {
 			_offsetX = _offsetY = _padding = 0.0;
 			addMissing();
 			addQuadless();
-			if (charQuadV == null) charQuadV = new <ApertureQuad>[];
-			if (lineQuadV == null) lineQuadV = new <ApertureQuad>[];
+			charQuadA = PoolEx.getArray();
+			lineQuadA = PoolEx.getArray();
 		}
 		private function addMissing():void {
 			addChar(Compositor.CHAR_MISSING,BitmapCharEx.getInstance(this,Compositor.CHAR_MISSING,0,0,0));
@@ -216,12 +217,12 @@ package starlingEx.text {
 		}
 		public function getCharQuad():ApertureQuad {
 			var charQuad:ApertureQuad;
-			if (charQuadV.length == 0) {
+			if (charQuadA.length == 0) {
 				Mesh.defaultStyleFactory = charQuadStyleFactory;
 				charQuad = new ApertureQuad();
 				Mesh.defaultStyleFactory = null;
 			}
-			else charQuad = charQuadV.pop();
+			else charQuad = charQuadA.pop();
 			charQuad.touchable = false;
 			return charQuad;
 		}
@@ -229,7 +230,7 @@ package starlingEx.text {
 			if (charQuad) {
 				charQuad.alignPivot(Align.LEFT,Align.TOP);
 				charQuad.skewX = 0;
-				charQuadV[charQuadV.length] = charQuad;
+				charQuadA[charQuadA.length] = charQuad;
 			}
 		}
 		private function charQuadStyleFactory():ApertureDistanceFieldStyle {
@@ -239,7 +240,7 @@ package starlingEx.text {
 		}
 		public function getLineQuad(w:Number,h:Number):ApertureQuad {
 			var lineQuad:ApertureQuad;
-			if (lineQuadV.length == 0) {
+			if (lineQuadA.length == 0) {
 				Mesh.defaultStyle = ApertureDistanceFieldStyle;
 				lineQuad = new ApertureQuad(w,h);
 				Mesh.defaultStyle = MeshStyle;
@@ -248,14 +249,14 @@ package starlingEx.text {
 				adfs.multiChannel = multiChannel;
 				adfs.setupOutline(0,0x000000,1,false);
 			} else {
-				lineQuad = lineQuadV.pop();
+				lineQuad = lineQuadA.pop();
 				lineQuad.readjustSize(w,h);
 			}
 			lineQuad.touchable = false;
 			return lineQuad;
 		}
 		public function putLineQuad(lineQuad:ApertureQuad):void {
-			if (lineQuad) lineQuadV[lineQuadV.length] = lineQuad;
+			if (lineQuad) lineQuadA[lineQuadA.length] = lineQuad;
 		}
 		public function setWhiteTexture(whiteX:uint,whiteY:uint):void {
 			this.whiteX = whiteX;
@@ -335,8 +336,11 @@ package starlingEx.text {
 				}
 			}
 			_size = _lineHeight = _baseline = _distanceFieldSpread = _italicRadians = _sinItalicRadians = _lineThicknessProportion = _baselineProportion = _underlineProportion = charQuadFactorySoftness = NaN;
-			disposeApertureQuadVector(charQuadV);
-			disposeApertureQuadVector(lineQuadV);
+			disposeQuadArray(charQuadA);
+			PoolEx.putArray(charQuadA);
+			disposeQuadArray(lineQuadA);
+			PoolEx.putArray(lineQuadA);
+			charQuadA = lineQuadA = null;
 			initCharFunction = null;
 			dynamicAtlas = null;
 			if (fontTexture) {
@@ -351,18 +355,17 @@ package starlingEx.text {
 			removePackListeners();
 			disposeSourceBitmapData();
 		}
-		private function disposeApertureQuadVector(vector:Vector.<ApertureQuad>):void {
-			const l:uint = vector.length;
+		private function disposeQuadArray(array:Array):void {
+			const l:uint = array.length;
 			for (var i:uint=0; i<l; i++) {
-				const apertureQuad:ApertureQuad = vector[i];
+				const apertureQuad:ApertureQuad = array[i];
 				apertureQuad.dispose();
 			}
-			vector.length = 0;
+			array.length = 0;
 		}
 		public function dispose():void {
 			reset();
 			_chars = null;
-			charQuadV = lineQuadV = null;
 		}
 	}
 
