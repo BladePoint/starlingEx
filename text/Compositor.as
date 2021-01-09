@@ -13,6 +13,7 @@ package starlingEx.text {
 	import starling.utils.StringUtil;
 	import starlingEx.text.BitmapCharEx;
 	import starlingEx.text.CharLocation;
+	import starlingEx.text.IFont;
 	import starlingEx.text.TagObject;
 	import starlingEx.text.TextFieldEx;
 	import starlingEx.text.TextFormatEx;
