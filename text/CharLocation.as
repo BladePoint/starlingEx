@@ -10,6 +10,7 @@ package starlingEx.text {
 	import starling.textures.Texture;
 	import starling.utils.Align;
 	import starling.utils.MathUtil;
+	
 	import starlingEx.display.ApertureQuad;
 	import starlingEx.styles.ApertureDistanceFieldStyle;
 	import starlingEx.text.BitmapCharEx;
@@ -63,9 +64,6 @@ package starlingEx.text {
 			const fontSize:Number = TagObject.getSize(tagObject,formatSize);
 			const lineThickness:Number = Math.max(1,Math.round(fontSize*lineThicknessProportion));
 			return lineThickness;
-		}
-		static private function getRowY(rowNumber:uint,fontHeight:Number,leading:Number,scale:Number):Number {
-			return rowNumber * (fontHeight + leading) * scale;
 		}
 		static private function getTagSizeOffsetY(fontHeight:Number,formatScale:Number,tagScale:Number,currentFont:IFont):Number {
 			return fontHeight * formatScale * (1-tagScale) * Compositor.getBaselineProportion(currentFont);
@@ -180,8 +178,7 @@ package starlingEx.text {
 		}
 
 		public var char:BitmapCharEx;
-		public var scale:Number, x:Number, y:Number, tagScale:Number;
-		public var rowNumber:uint;
+		public var scale:Number, x:Number, y:Number, rowY:Number, tagScale:Number;
 		public var endOfLine:Boolean;
 		internal var outerStrikethroughA:Array, innerStrikethroughA:Array, shadowStrikethroughA:Array,
 			outerUnderlineA:Array, innerUnderlineA:Array, shadowUnderlineA:Array,
@@ -282,7 +279,7 @@ package starlingEx.text {
 				formatSize:Number = textFormat.size,
 				innerH:Number = getLineThickness(currentFont,tagObject,formatSize),
 				formatScale:Number = formatSize / formatFont.size;
-			const baseY:Number = getRowY(rowNumber,fontHeight,textFormat.leading,formatScale)
+			const baseY:Number = rowY
 				+ getTagSizeOffsetY(fontHeight,formatScale,tagScale,currentFont)
 				+ (fontHeight*scale - innerH) / 2;
 			const outerH:uint = getOuterH(start_CL,innerH);
@@ -328,7 +325,7 @@ package starlingEx.text {
 				innerH:Number = getLineThickness(currentFont,tagObject,formatSize),
 				formatScale:Number = formatSize / formatFont.size;
 			const outerH:uint = getOuterH(start_CL,innerH);
-			const baseY:Number = getRowY(rowNumber,fontHeight,textFormat.leading,formatScale)
+			const baseY:Number = rowY
 				+ getTagSizeOffsetY(fontHeight,formatScale,tagScale,currentFont)
 				+ formatSize * tagScale * Compositor.getUnderlineProportion(currentFont)
 				+ getUnderlineOffsetY(outerH,innerH);
@@ -353,7 +350,7 @@ package starlingEx.text {
 				innerH:Number = getLineThickness(currentFont,tagObject,formatSize),
 				formatScale:Number = formatSize / formatFont.size;
 			const outerH:uint = getOuterH(start_CL,innerH);
-			const baseY:Number = getRowY(rowNumber,fontHeight,textFormat.leading,formatScale)
+			const baseY:Number = rowY
 				+ getTagSizeOffsetY(fontHeight,formatScale,tagScale,currentFont)
 				+ formatSize * tagScale * underlineProportion
 				+ getUnderlineOffsetY(outerH,innerH);
@@ -547,8 +544,7 @@ package starlingEx.text {
 		}
 		public function reset():void {
 			char = null;
-			scale = x = y = tagScale = NaN;
-			rowNumber = 0;
+			scale = x = y = rowY = tagScale = NaN;
 			endOfLine = false;
 			const iFont:IFont = char.font;
 			clearTextLineArray(outerStrikethroughA,iFont);
