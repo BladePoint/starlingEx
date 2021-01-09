@@ -8,7 +8,7 @@ package starlingEx.utils {
 	import starlingEx.utils.Utils;
 
 	public class PoolEx {
-		static private var arrayV:Vector.<Array> = new <Array>[];
+		static private const arrayV:Vector.<Array> = new <Array>[];
 		static public function getArray():Array {
 			if (arrayV.length == 0) return [];
 			else return arrayV.pop();
@@ -19,7 +19,7 @@ package starlingEx.utils {
 				arrayV[arrayV.length] = array;
 			}
 		}
-		static private var objectV:Vector.<Object> = new <Object>[];
+		static private const objectV:Vector.<Object> = new <Object>[];
 		static public function getObject():Object {
 			if (objectV.length == 0) return {};
 			else return objectV.pop();
@@ -30,7 +30,7 @@ package starlingEx.utils {
 				objectV[objectV.length] = object;
 			}
 		}
-		static private var uintVV:Vector.<Vector.<uint>> = new <Vector.<uint>>[];
+		static private const uintVV:Vector.<Vector.<uint>> = new <Vector.<uint>>[];
 		static public function getUintV(startUint:uint=0,endUint:uint=0):Vector.<uint> {
 			var uintV:Vector.<uint>;
 			if (uintVV.length == 0) uintV = new <uint>[];
