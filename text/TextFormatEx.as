@@ -209,7 +209,7 @@ package starlingEx.text {
 				_outlineColor = outlineHex;
 				outlineColorCode = 255;
 			}
-			var changeCode:uint = Color.argb(colorCode,outlineColorCode,0,0);
+			const changeCode:uint = Color.argb(colorCode,outlineColorCode,0,0);
 			if (changeCode && dispatchOnChange) dispatch(APERTURE_CHANGE,changeCode);
 		}
 		public function get outlineColor():uint {return _outlineColor;}
@@ -249,7 +249,7 @@ package starlingEx.text {
 				_softness = softness;
 				softnessCode = 255;
 			}
-			var changeCode:uint = Color.argb(0,colorCode,widthCode,softnessCode);
+			const changeCode:uint = Color.argb(0,colorCode,widthCode,softnessCode);
 			if (changeCode) dispatch(APERTURE_CHANGE,changeCode);
 		}
 		public function get dropShadowX():Number {return _dropShadowX;}
