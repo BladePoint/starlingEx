@@ -24,7 +24,7 @@ package starlingEx.text {
 		}
 		static public function putInstance(bitmapChar:BitmapCharEx):void {
 			if (bitmapChar) {
-				bitmapChar.dispose();
+				bitmapChar.reset();
 				instancePool[instancePool.length] = bitmapChar;
 			}
 		}
@@ -87,7 +87,7 @@ package starlingEx.text {
 				return _textureBitmapData.quadH;
 			} else return 0;
 		}
-		public function dispose():void {
+		public function reset():void {
 			_iFont = null;
 			_textureBitmapData = null;
 			_texture = null;
@@ -96,6 +96,10 @@ package starlingEx.text {
 					delete _kernings[charID];
 				}
 			}
+		}
+		public function dispose():void {
+			reset();
+			_kernings = null;
 		}
 	}
 
