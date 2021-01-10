@@ -9,9 +9,9 @@ package starlingEx.textures {
 
 	public interface ITextureOnDemand {
 
-		function calcQuadDimensions():void;
-		function get quadW():uint;
-		function get quadH():uint;
+		function calcTextureDimensions():void;
+		function get textureWidth():uint;
+		function get textureHeight():uint;
 		function get texture():Texture;
 
 	}
