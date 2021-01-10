@@ -76,15 +76,15 @@ package starlingEx.text {
 		public function get width():Number {
 			if (_texture) return _texture.width;
 			else if (_textureBitmapData) {
-				if (_textureBitmapData.quadW == 0) _textureBitmapData.calcQuadDimensions();
-				return _textureBitmapData.quadW;
+				if (_textureBitmapData.textureWidth == 0) _textureBitmapData.calcTextureDimensions();
+				return _textureBitmapData.textureWidth;
 			} else return 0;
 		}
 		public function get height():Number {
 			if (_texture) return _texture.height;
 			else if (_textureBitmapData) {
-				if (_textureBitmapData.quadH == 0) _textureBitmapData.calcQuadDimensions();
-				return _textureBitmapData.quadH;
+				if (_textureBitmapData.textureHeight == 0) _textureBitmapData.calcTextureDimensions();
+				return _textureBitmapData.textureHeight;
 			} else return 0;
 		}
 		public function reset():void {
