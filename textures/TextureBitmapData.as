@@ -79,7 +79,6 @@ package starlingEx.textures {
 			sourceBMD = null;
 			super.dispose();
 		}
-
 	}
 	
 }
