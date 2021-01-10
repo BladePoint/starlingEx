@@ -42,7 +42,7 @@ package starlingEx.textures {
 		private var dynamicAtlas:DynamicAtlas;
 		public function TextureDrawable(iBitmapDrawable:IBitmapDrawable) {
 			sourceDrawable = iBitmapDrawable;
-			var sourceO:Object = sourceDrawable as Object;
+			const sourceO:Object = sourceDrawable as Object;
 			originalW = sourceO.width;
 			originalH = sourceO.height;
 			cropW = cropH = 0;
