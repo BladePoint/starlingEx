@@ -14,7 +14,7 @@ TextFormatEx sets the default formatting for a TextFieldEx. It has 3 additional 
 * Set the position, color, and alpha of a dropshadow that appears behind all the letters.
 
 ## TextFieldEx
-![TextFieldEx](https://github.com/BladePoint/StarlingEx/blob/master/docs/ApertureTextField.png)
+![TextFieldEx](https://github.com/BladePoint/StarlingEx/blob/master/docs/TextFieldEx.png)
 TextFieldEx extends ApertureSprite and uses ApertureQuads for letters. You can override the TextFormatEx formatting through the use of inline tags which use a format similar to BBCode.
 * The [font] tag can be used to change fonts anywhere in the textfield. All fonts must be registered in Compositor with the registerFont() method: [font=arial]Arial[/font]
 * The [size] tag can be used to change the font size anywhere in the textfield: [size=14]smaller text[/size]
