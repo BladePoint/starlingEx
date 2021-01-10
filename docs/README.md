@@ -33,7 +33,7 @@ TextFieldEx extends ApertureSprite and uses ApertureQuads for letters. You can o
 Don't forget to close your tags. Try out the [demo here](https://www.newgrounds.com/projects/games/1546135/preview) and use the slider at the bottom of the screen to increase the scale. You'll notice there is no pixelization as the size increases because ApertureTextField uses distance field fonts. The following string was used to produce the text in the demo: `"normal [strikethrough]strikethrough[/strikethrough] [underline]underline[/underline] [color=0xffa500]orange[/color]\n[outlineWidth=.2]bold[/outlineWidth] [italic]italic [outlineWidth=.2]bold and italic[/italic][/outlineWidth] [outlineColor=0xff0000][outlineWidth=.15]red outline[/outlineColor]\n[outlineColor=0x00ff00][color=0x000000,0x00ff00]green outline black top green bottom[/color][/outlineColor]\n[outlineColor=0xffffff][color=0xff0000,0x00ff00,0x0000ff,0x000000]white outline red green blue black[/color][/outlineColor][/outlineWidth]\n[link]link1[/link] [link]link2[/link] [link]link3[/link]"`
 
 ## TextLink
-Set the following static properties of the TextLink class to change the default colors of links in all ApertureTextFields:
+Set the following static properties of the TextLink class to change the default colors of links:
 defaultNormalTopLeft, defaultNormalTopRight, defaultNormalBottomLeft, defaultNormalBottomRight, defaultNormalOutlineColor, defaultHoverTopLeft,
 defaultHoverTopRight, defaultHoverBottomLeft, defaultHoverBottomRight, defaultHoverOutlineColor, defaultNormalWidth, defaultHoverWidth
 
