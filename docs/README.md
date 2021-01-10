@@ -16,6 +16,9 @@ TextFormatEx sets the default formatting for a TextFieldEx. It has 3 additional 
 ## TextFieldEx
 ![TextFieldEx](https://github.com/BladePoint/StarlingEx/blob/master/docs/ApertureTextField.png)
 TextFieldEx extends ApertureSprite and uses ApertureQuads for letters. You can override the TextFormatEx formatting through the use of inline tags which use a format similar to BBCode.
+* The [font] tag can be used to change fonts anywhere in the textfield. All fonts must be registered in Compositor with the registerFont() method: [font=arial]Arial[/font]
+* The [size] tag can be used to change the font size anywhere in the textfield: [size=14]smaller text[/size]
+* the [offsetY] tag can be used to adjust the vertical alignment of text. You may wish to do this if changing the font and size cause the text to be misaligned: [offsetY=-10]higher text[/offset]
 * The [color] tag can have either 1, 2, or 4 comma-separated assignments.
   * Use 1 assignment like the following to color the text between the tags red: [color=0xff0000]red[/color]
   * If you use 2 assignments, the top half of the text will use the first color and the bottom half of the text will use the second color: [color=0xff0000,0x00ff00]red and green[/color]
