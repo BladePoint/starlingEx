@@ -44,8 +44,8 @@ BitmapFontEx implements IFont, which is required to work with TextFieldEx. A Bit
 * Initialize with a Texture and XML. You cannot use a DynamicAtlas if you initialize in this manner: initTexture(fontAtlasTexture:Texture,fontXML:XML)
 After creating a BitmapFontEx, you must register it with Compositor using the registerFont method.
 
-`var arial_BFX:BitmapFontEx = new BitmapFontEx("abcdefghijklmnopqrstuvwxyz");  
-`arial_BFX.initBitmapData(arial_BMD,arial_XML);  
+`var arial_BFX:BitmapFontEx = new BitmapFontEx("abcdefghijklmnopqrstuvwxyz");`  
+`arial_BFX.initBitmapData(arial_BMD,arial_XML);`  
 `Compositor.registerFont(arial_BFX,"arial:);`
 
 Use the setWhiteTexture(x:uint,y:uint) method and pass in the coordinates of a 1x1 section of the bitmap that is purely white. This subtexture will be used when drawing strikethroughs and underlines to prevent an additional draw call.
