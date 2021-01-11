@@ -52,4 +52,41 @@ After creating a BitmapFontEx, you must register it with Compositor using the re
 Use the setWhiteTexture(x:uint,y:uint) method and pass in the coordinates of a 1x1 section of the texture that is purely white. This subtexture will be used when drawing strikethroughs and underlines to prevent an additional draw call. This method is not necessary if you are using a DynamicAtlas.
 
 ## DynamicAtlas
+A DynamicAtlas takes multiple BitmapDatas as input and packs copies of them into the smallest power-of-two-sized BitmapData possible in order to output a Texture. You can save some GPU memory by doing this, and if your Quads which use that texture all have the same style, you can save draw calls as well. BitmapDatas to be packed by a DynamicAtlas first have to go into a TextureBitmapData.
 
+## TextureBitmapData
+The constructor of a TextureBitmapData takes the source BitmapData as the sole parameter. If you're only using a portion of the source BitmapData, use setSourceOffset(offsetX:uint,offsetY:uint) to specify the coordinates of the section you want to use, and setSourceDimensions(w:Number,h:Number) to specify its width and height. Use a TextureBitmapData's texture property to return a Texture generated from that section of the source BitmapData. If you pack the TextureBitmapData into a DynamicAtlas before using it's texture property, it will return a SubTexture from the DynamicAtlas.
+
+Heres an example showing how some of all this works:
+`
+public class StarlingEx_root extends Sprite {
+  [Embed(source="/fonts/DG_Arial.png")]
+		public var Arial_BMP:Class;
+		[Embed(source="/fonts/DG_Arial.fnt", mimeType="application/octet-stream")]
+		public var Arial_XML:Class;
+		[Embed(source="/fonts/Korinna-Bold.png")]
+		public var Korinna_BMP:Class;
+		[Embed(source="/fonts/Korinna-Bold.fnt", mimeType="application/octet-stream")]
+		public var Korinna_XML:Class;
+  public function StarlingEx_root {
+    var dynamicAtlas:DynamicAtlas = new DynamicAtlas();
+		  var arial_xml:XML = XML(new Arial_XML());
+			 var arial_BFX:BitmapFontEx = BitmapFontEx.getInstance();
+			 arial_BFX.initBitmapClass(Arial_BMP,arial_xml,dynamicAtlas);
+			 var korinna_xml:XML = XML(new Korinna_XML());
+			 var korinna_BFX:BitmapFontEx = BitmapFontEx.getInstance();
+			 korinna_BFX.initBitmapClass(Korinna_BMP,korinna_xml,dynamicAtlas);
+			 dynamicAtlas.pack();
+			 Compositor.registerFont(arial_BFX,"arial");
+			 Compositor.registerFont(korinna_BFX,"korinna");
+    var textFormat:TextFormatEx = TextFormatEx.getInstance("arial",32);
+    textFormat.softness = .3;
+			 textFormat.dropShadowX = textFormat.dropShadowY = 4;
+    var textField:TextFieldEx = new TextFieldEx(-1,-1,
+				  "This is size 32 Arial. [size=50][font=korinna]This is size 50 Korinna.[/font][/size]",
+				  textFormat
+    );
+			 addChild(textField);
+  }
+}
+`
