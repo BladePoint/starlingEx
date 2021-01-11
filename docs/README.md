@@ -60,33 +60,33 @@ The constructor of a TextureBitmapData takes the source BitmapData as the sole p
 Heres an example showing how some of all this works:
 ```
 public class StarlingEx_root extends Sprite {
-  [Embed(source="/fonts/DG_Arial.png")]
-		public var Arial_BMP:Class;
-		[Embed(source="/fonts/DG_Arial.fnt", mimeType="application/octet-stream")]
-		public var Arial_XML:Class;
-		[Embed(source="/fonts/Korinna-Bold.png")]
-		public var Korinna_BMP:Class;
-		[Embed(source="/fonts/Korinna-Bold.fnt", mimeType="application/octet-stream")]
-		public var Korinna_XML:Class;
-  public function StarlingEx_root {
-    var dynamicAtlas:DynamicAtlas = new DynamicAtlas();
-		  var arial_xml:XML = XML(new Arial_XML());
-			 var arial_BFX:BitmapFontEx = BitmapFontEx.getInstance();
-			 arial_BFX.initBitmapClass(Arial_BMP,arial_xml,dynamicAtlas);
-			 var korinna_xml:XML = XML(new Korinna_XML());
-			 var korinna_BFX:BitmapFontEx = BitmapFontEx.getInstance();
-			 korinna_BFX.initBitmapClass(Korinna_BMP,korinna_xml,dynamicAtlas);
-			 dynamicAtlas.pack();
-			 Compositor.registerFont(arial_BFX,"arial");
-			 Compositor.registerFont(korinna_BFX,"korinna");
-    var textFormat:TextFormatEx = TextFormatEx.getInstance("arial",32);
-    textFormat.softness = .3;
-			 textFormat.dropShadowX = textFormat.dropShadowY = 4;
-    var textField:TextFieldEx = new TextFieldEx(-1,-1,
-				  "This is size 32 Arial. [size=50][font=korinna]This is size 50 Korinna.[/font][/size]",
-				  textFormat
-    );
-			 addChild(textField);
-  }
+	[Embed(source="/fonts/DG_Arial.png")]
+	public var Arial_BMP:Class;
+	[Embed(source="/fonts/DG_Arial.fnt", mimeType="application/octet-stream")]
+	public var Arial_XML:Class;
+	[Embed(source="/fonts/Korinna-Bold.png")]
+	public var Korinna_BMP:Class;
+	[Embed(source="/fonts/Korinna-Bold.fnt", mimeType="application/octet-stream")]
+	public var Korinna_XML:Class;
+	public function StarlingEx_root {
+    		var dynamicAtlas:DynamicAtlas = new DynamicAtlas();
+		var arial_xml:XML = XML(new Arial_XML());
+		var arial_BFX:BitmapFontEx = BitmapFontEx.getInstance();
+		arial_BFX.initBitmapClass(Arial_BMP,arial_xml,dynamicAtlas);
+		var korinna_xml:XML = XML(new Korinna_XML());
+		var korinna_BFX:BitmapFontEx = BitmapFontEx.getInstance();
+		korinna_BFX.initBitmapClass(Korinna_BMP,korinna_xml,dynamicAtlas);
+		dynamicAtlas.pack();
+		Compositor.registerFont(arial_BFX,"arial");
+		Compositor.registerFont(korinna_BFX,"korinna");
+    		var textFormat:TextFormatEx = TextFormatEx.getInstance("arial",32);
+    		textFormat.softness = .3;
+		textFormat.dropShadowX = textFormat.dropShadowY = 4;
+    		var textField:TextFieldEx = new TextFieldEx(-1,-1,
+			"This is size 32 Arial. [size=50][font=korinna]This is size 50 Korinna.[/font][/size]",
+			textFormat
+    		);
+		addChild(textField);
+	}
 }
 ```
