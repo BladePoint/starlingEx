@@ -10,7 +10,7 @@ package starlingEx.textures {
 	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
 	import starling.textures.Texture;
-	import starlingEx.display.QuadDemander;
+	//import starlingEx.display.QuadDemander;
 	import starlingEx.textures.DynamicAtlas;
 	import starlingEx.textures.ITextureOnDemand;
 	import starlingEx.utils.Utils;
@@ -98,12 +98,12 @@ package starlingEx.textures {
 		}
 		public function getBMD():BitmapData {return null;}
 		public function copyPixelsTo(target_BMD:BitmapData):void {}
-		public function addMapped(quadDemander:QuadDemander):void {
+		/*public function addMapped(quadDemander:QuadDemander):void {
 			mappedO[quadDemander.id] = quadDemander;
 		}
 		public function removeMapped(quadDemander:QuadDemander):void {
 			delete mappedO[quadDemander.id];
-		}
+		}*/
 		public function reassignTextures():void {
 			for (var id:String in mappedO) mappedO[id].getTexture();
 		}
