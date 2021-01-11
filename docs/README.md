@@ -58,7 +58,7 @@ A DynamicAtlas takes multiple BitmapDatas as input and packs copies of them into
 The constructor of a TextureBitmapData takes the source BitmapData as the sole parameter. If you're only using a portion of the source BitmapData, use setSourceOffset(offsetX:uint,offsetY:uint) to specify the coordinates of the section you want to use, and setSourceDimensions(w:Number,h:Number) to specify its width and height. Use a TextureBitmapData's texture property to return a Texture generated from that section of the source BitmapData. If you pack the TextureBitmapData into a DynamicAtlas before using it's texture property, it will return a SubTexture from the DynamicAtlas.
 
 Heres an example showing how some of all this works:
-`
+```
 public class StarlingEx_root extends Sprite {
   [Embed(source="/fonts/DG_Arial.png")]
 		public var Arial_BMP:Class;
@@ -89,4 +89,4 @@ public class StarlingEx_root extends Sprite {
 			 addChild(textField);
   }
 }
-`
+```
