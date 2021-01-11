@@ -16,7 +16,7 @@ TextFormatEx sets the default formatting for a TextFieldEx. It has 3 additional 
 ## TextFieldEx
 ![TextFieldEx](https://github.com/BladePoint/StarlingEx/blob/master/docs/TextFieldEx.png)
 TextFieldEx extends ApertureSprite and uses ApertureQuads for letters. You can override the TextFormatEx formatting through the use of inline tags which use a format similar to BBCode.
-* The [font] tag can be used to change fonts anywhere in the textfield. All fonts must be registered in Compositor with the registerFont() method: [font=arial]Arial[/font]
+* The [font] tag can be used to change fonts anywhere in the textfield. All fonts must be registered in Compositor with the registerFont method: [font=arial]Arial[/font]
 * The [size] tag can be used to change the font size anywhere in the textfield: [size=14]smaller text[/size]
 * the [offsetY] tag can be used to adjust the vertical alignment of text. You may wish to do this if changing the font and size cause the text to be misaligned: [offsetY=-10]higher text[/offset]
 * The [color] tag can have either 1, 2, or 4 comma-separated assignments.
@@ -45,7 +45,7 @@ BitmapFontEx implements IFont, which is required to work with TextFieldEx. A Bit
 After creating a BitmapFontEx, you must register it with Compositor using the registerFont method.
 
 `var arial_BFX:BitmapFontEx = new BitmapFontEx("abcdefghijklmnopqrstuvwxyz");
-arial_BFX.initBitmapData(atlas_BMD,fontXML);
-Compositor.(arial_DFF,arial_DFF.name);`
+arial_BFX.initBitmapData(arial_BMD,arial_XML);
+Compositor.registerFont(arial_BFX,"arial:);`
 
 Use the setWhiteTexture(x:uint,y:uint) method and pass in the coordinates of a 1x1 section of the bitmap that is purely white. This subtexture will be used when drawing strikethroughs and underlines to prevent an additional draw call.
