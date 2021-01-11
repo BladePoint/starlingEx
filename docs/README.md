@@ -46,7 +46,7 @@ After creating a BitmapFontEx, you must register it with Compositor using the re
 
 `var arial_BFX:BitmapFontEx = new BitmapFontEx("abcdefghijklmnopqrstuvwxyz");`  
 `arial_BFX.initBitmapData(arial_BMD,arial_XML);`  
-`Compositor.registerFont(arial_BFX,"arial:);`
+`Compositor.registerFont(arial_BFX,"arial");`
 
 Use the setWhiteTexture(x:uint,y:uint) method and pass in the coordinates of a 1x1 section of the texture that is purely white. This subtexture will be used when drawing strikethroughs and underlines to prevent an additional draw call. This method is not necessary if you are using a DynamicAtlas.
 
