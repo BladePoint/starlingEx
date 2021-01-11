@@ -543,10 +543,10 @@ package starlingEx.text {
 			return _shadowQuad;
 		}
 		public function reset():void {
-			char = null;
 			scale = x = y = rowY = tagScale = NaN;
 			endOfLine = false;
 			const iFont:IFont = char.font;
+			char = null;
 			clearTextLineArray(outerStrikethroughA,iFont);
 			PoolEx.putArray(outerStrikethroughA);
 			clearTextLineArray(innerStrikethroughA,iFont);
