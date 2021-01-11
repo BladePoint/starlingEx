@@ -50,10 +50,10 @@ package starlingEx.text {
 		}
 
 		public var threshold:Number = Compositor.defaultThreshold;
-		public var whiteX:int = -1, whiteY:int = -1;
 		private var _characters:String, _name:String, _smoothing:String, _type:String;
 		private var _chars:Dictionary;
 		private var _offsetX:Number, _offsetY:Number, _padding:Number, _size:Number, _lineHeight:Number, _baseline:Number, _distanceFieldSpread:Number, _italicRadians:Number, _sinItalicRadians:Number, _lineThicknessProportion:Number, _baselineProportion:Number, _underlineProportion:Number, charQuadFactorySoftness:Number;
+		private var whiteX:int = -1, whiteY:int = -1;
 		private var charQuadA:Array, lineQuadA:Array;
 		private var initCharFunction:Function;
 		private var dynamicAtlas:DynamicAtlas;
