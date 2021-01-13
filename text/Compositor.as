@@ -8,7 +8,6 @@ package starlingEx.text {
 	import flash.utils.Dictionary;
 	import starling.core.Starling;
 	import starling.errors.AbstractClassError;
-	import starling.text.TextOptions;
 	import starling.utils.Align;
 	import starling.utils.StringUtil;
 	import starlingEx.text.BitmapCharEx;
@@ -18,6 +17,7 @@ package starlingEx.text {
 	import starlingEx.text.TextFieldEx;
 	import starlingEx.text.TextFormatEx;
 	import starlingEx.text.TextLink;
+	import starlingEx.text.TextOptionsEx;
 	import starlingEx.text.TextTag;
 	import starlingEx.utils.PoolEx;
 	import starlingEx.utils.Utils;
@@ -78,7 +78,7 @@ package starlingEx.text {
 		static public function fillContainer(textField:TextFieldEx,width:Number,height:Number):Vector.<CharLocation> {
 			const text:String = textField.text;
 			const textFormat:TextFormatEx = textField.format;
-			const options:TextOptions = textField.options;
+			const options:TextOptionsEx = textField.options;
 			const addToTextSprite:Function = textField.addToTextSprite;
 			const charLocationV:Vector.<CharLocation> = arrangeLocations(textField,text,textFormat,options,width,height);
 			const fontO:Object = PoolEx.getObject();
@@ -151,7 +151,7 @@ package starlingEx.text {
 			PoolEx.putObject(fontO);
 			return charLocationV;
 		}
-		static public function arrangeLocations(textField:TextFieldEx,text:String,textFormat:TextFormatEx,options:TextOptions,width:Number,height:Number):Vector.<CharLocation> {
+		static public function arrangeLocations(textField:TextFieldEx,text:String,textFormat:TextFormatEx,options:TextOptionsEx,width:Number,height:Number):Vector.<CharLocation> {
 			if (text == null || text.length == 0) return CharLocation.getVector();
 			const formatFont:IFont = getFont(textFormat.font);
 			const fontSize:Number = formatFont.size,
