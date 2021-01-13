@@ -5,30 +5,69 @@
 
 package starlingEx.text {
 
+	import flash.display3D.Context3DTextureFormat;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import starling.display.DisplayObject;
 	import starling.events.Event;
 	import starling.rendering.Painter;
 	import starling.text.TextFieldAutoSize;
-	import starling.text.TextOptions;
 	import starling.utils.Color;
 	import starling.utils.Pool;
+	import starling.utils.RectangleUtil;
 	import starlingEx.display.ApertureQuad;
 	import starlingEx.display.ApertureSprite;
 	import starlingEx.text.CharLocation;
 	import starlingEx.text.Compositor;
 	import starlingEx.text.TextFormatEx;
+	import starlingEx.text.TextOptionsEx;
 	import starlingEx.utils.PoolEx;
 
 	/* TextFieldEx supports format tags similar to BBCode. See TextTag for a list of available tags. Much of this code is appropriated from
 	   starling.text.Textfield. */
 	public class TextFieldEx extends ApertureSprite {
+		static private const instancePool:Vector.<TextFieldEx> = new <TextFieldEx>[];
+		static public function getInstance(width:int,height:int,text:String,format:TextFormatEx,options:TextOptionsEx=null,linkFunctionA:Array=null):TextFieldEx {
+			var textField:TextFieldEx;
+			if (instancePool.length == 0) textField = new TextFieldEx(width,height,text,format,options,linkFunctionA);
+			else {
+				textField = instancePool.pop();
+				textField.init(width,height,text,format,options,linkFunctionA);
+			}
+			return textField;
+		}
+		static public function putInstance(textField:TextFieldEx):void {
+			if (textField) {
+				textField.reset();
+				instancePool[instancePool.length] = textField;
+			}
+		}
+		static private const spritePool:Vector.<ApertureSprite> = new <ApertureSprite>[];
+		static public function getSprite():ApertureSprite {
+			var apertureSprite:ApertureSprite;
+			if (spritePool.length == 0) apertureSprite = new ApertureSprite();
+			else apertureSprite = spritePool.pop();
+			return apertureSprite;
+		}
+		static public function putSprite(apertureSprite:ApertureSprite):void {
+			if (apertureSprite) {
+				apertureSprite.x = apertureSprite.y = 0;
+				apertureSprite.alpha = 1;
+				apertureSprite.setHex(0xffffff,false);
+				spritePool[spritePool.length] = apertureSprite;
+			}
+		}
+		static private var sDefaultTextureFormat:String = Context3DTextureFormat.BGRA_PACKED;
+		static public function get defaultTextureFormat():String {return sDefaultTextureFormat;}
+		static public function set defaultTextureFormat(value:String):void {
+			sDefaultTextureFormat = value;
+		}
 		static private const sMatrix:Matrix = Pool.getMatrix();
 		static private const maxUint:uint = uint.MAX_VALUE;
 		
 		private var _text:String;
 		private var _format:TextFormatEx;
-		private var _options:TextOptions;
+		private var _options:TextOptionsEx;
 		private var _hitArea:Rectangle, _textBounds:Rectangle;
 		private var linkFunctionA:Array, textTagA:Array, tagObjectA:Array;
 		private var text_AS:ApertureSprite, shadow_AS:ApertureSprite, _border:ApertureSprite;
@@ -37,18 +76,21 @@ package starlingEx.text {
 		private var textLinkV:Vector.<TextLink>;
 		/* If your text string includes link tags, be sure to pass an array of the functions to be called when they are clicked on. The first function
 		   in the array will be assigned to the first link, the second function will be assigned to the second link, etc... */
-		public function TextFieldEx(width:int,height:int,text:String,format:TextFormatEx,options:TextOptions=null,linkFunctionA:Array=null) {
+		public function TextFieldEx(width:int,height:int,text:String,format:TextFormatEx,options:TextOptionsEx=null,linkFunctionA:Array=null) {
+			init(width,height,text,format,options,linkFunctionA);
+		}
+		private function init(width:int,height:int,text:String,format:TextFormatEx,options:TextOptionsEx,linkFunctionA:Array):void {
+			text_AS = getSprite();
+			addChild(text_AS);
 			_text = text;
 			_format = format.clone();
 			_format.assignTextField(this);
 			_format.addEventListener(Event.CHANGE,setRequiresRecomposition);
 			_format.addEventListener(TextFormatEx.APERTURE_CHANGE,apertureChange);
 			_format.addEventListener(TextFormatEx.SHADOW_CHANGE,shadowChange);
-			_options = options ? options.clone() : new TextOptions();
+			_options = options ? options.clone() : TextOptionsEx.getInstance();
 			_options.addEventListener(Event.CHANGE,setRequiresRecomposition);
 			this.linkFunctionA = linkFunctionA;
-			text_AS = new ApertureSprite();
-			addChild(text_AS);
 			initHitArea(width,height);
 			requiresRecomposition = true;
 		}
@@ -80,6 +122,12 @@ package starlingEx.text {
 				_hitArea.height = maxUint;
 			}
 		}
+		public function getTextBounds(targetSpace:DisplayObject,out:Rectangle=null):Rectangle {
+			if (requiresRecomposition) recompose();
+			if (_textBounds == null) text_AS.getBounds(text_AS,_textBounds);
+			getTransformationMatrix(targetSpace,sMatrix);
+			return RectangleUtil.getBounds(_textBounds,sMatrix,out);
+		}
 		public function setRequiresRecomposition():void {
 			if (!recomposing) {
 				requiresRecomposition = true;
@@ -93,7 +141,7 @@ package starlingEx.text {
 		private function recompose():void {
 			if (requiresRecomposition) {
 				recomposing = true;
-				reset();
+				resetText();
 				parseText();
 				updateText();
 				updateTextLink();
@@ -103,14 +151,14 @@ package starlingEx.text {
 				recomposing = false;
 			}
 		}
-		private function reset():void {
+		private function resetText():void {
 			disposeTextBounds();
 			disposeTags();
 			disposeTextLinkV();
 			CharLocation.putVector(charLocationV,true);
 			if (shadow_AS) {
 				removeChild(shadow_AS);
-				shadow_AS.dispose();
+				putSprite(shadow_AS);
 				shadow_AS = null;
 			}
 		}
@@ -204,7 +252,7 @@ package starlingEx.text {
 			charLocationV = Compositor.fillContainer(this,width,height);
 			if (_options.autoSize != TextFieldAutoSize.NONE) {
 				_textBounds = Pool.getRectangle();
-				_textBounds = text_AS.getBounds(text_AS,_textBounds);
+				text_AS.getBounds(text_AS,_textBounds);
 				if (isHorizontalAutoSize) {
 					text_AS.x = _textBounds.x = -_textBounds.x;
 					_hitArea.width = _textBounds.width;
@@ -263,7 +311,7 @@ package starlingEx.text {
 		}
 		private function initShadow():void {
 			if (shadow_AS == null) {
-				shadow_AS = new ApertureSprite();
+				shadow_AS = getSprite();
 				shadow_AS.touchable = false;
 				addChildAt(shadow_AS,0);
 				Compositor.fillShadow(charLocationV);
@@ -310,8 +358,8 @@ package starlingEx.text {
 		}
 		public function get border():Boolean {return _border != null;}
 		public function set border(value:Boolean):void {
-			if (value && _border == null) {                
-				_border = new ApertureSprite();
+			if (value && _border == null) {
+				_border = getSprite();
 				addChild(_border);
 				for (var i:int=0; i<4; ++i) {
 					_border.addChild(new ApertureQuad(1,1));
@@ -335,6 +383,18 @@ package starlingEx.text {
 			rightLine.x  = width  - 1;
 			bottomLine.y = height - 1;
 			topLine.color = rightLine.color = bottomLine.color = leftLine.color = _format.topLeftColor;
+		}
+		private function disposeBorder():void {
+			if (_border) {
+				removeChild(_border);
+				while (_border.numChildren > 0) {
+					const apertureQuad:ApertureQuad = _border.getChildAt(0) as ApertureQuad;
+					_border.removeChild(apertureQuad);
+					apertureQuad.dispose();
+				}
+				putSprite(_border);
+				_border = null;
+			}
 		}
 		private function apertureChange(evt:Event,changeHex:uint):void {
 			const baseColorB:Boolean = Boolean(Color.getAlpha(changeHex)),
@@ -440,7 +500,7 @@ package starlingEx.text {
 			if (textFormat == null) throw new ArgumentError("format cannot be null");
 			_format.copyFrom(textFormat);
 		}
-		public function get options():TextOptions {return _options;}
+		public function get options():TextOptionsEx {return _options;}
 		public function get wordWrap():Boolean {return _options.wordWrap;}
 		public function set wordWrap(value:Boolean):void {_options.wordWrap = value;}
 		private function disposeTextBounds():void {
@@ -481,42 +541,35 @@ package starlingEx.text {
 				touchable = false;
 			}
 		}
-		private function disposeBorder():void {
-			if (_border) {
-				_border.removeFromParent();
-				while (_border.numChildren > 0) {
-					const apertureQuad:ApertureQuad = _border.getChildAt(0) as ApertureQuad;
-					_border.removeChild(apertureQuad);
-					apertureQuad.dispose();
-				}
-				_border.dispose();
-				_border = null;
-			}
-		}
-		public override function dispose():void {
-			disposeTextLinkV();
-			CharLocation.putVector(charLocationV,true)
-			charLocationV = null;
-			removeChild(text_AS);
-			text_AS.dispose();
-			text_AS = null;
-			if (shadow_AS) {
-				removeChild(shadow_AS);
-				shadow_AS.dispose();
-				shadow_AS = null;
-			}
-			disposeTags();
-			Pool.putRectangle(_hitArea);
-			_hitArea = null;
-			disposeTextBounds();
+		private function reset():void {
 			_format.removeEventListener(Event.CHANGE,setRequiresRecomposition);
 			_format.removeEventListener(TextFormatEx.APERTURE_CHANGE,apertureChange);
 			_format.removeEventListener(TextFormatEx.SHADOW_CHANGE,shadowChange);
 			TextFormatEx.putInstance(_format);
 			_format = null;
 			_options.removeEventListener(Event.CHANGE,setRequiresRecomposition);
+			TextOptionsEx.putInstance(_options);
 			_options = null;
+			Pool.putRectangle(_hitArea);
+			_hitArea = null;
+			disposeTextBounds();
+			disposeTags();
+			disposeTextLinkV();
+			CharLocation.putVector(charLocationV,true)
+			charLocationV = null;
+			removeChild(text_AS);
+			putSprite(text_AS);
+			text_AS = null;
+			if (shadow_AS) {
+				removeChild(shadow_AS);
+				putSprite(shadow_AS);
+				shadow_AS = null;
+			}
 			disposeBorder();
+			removeEventListeners();
+		}
+		public override function dispose():void {
+			reset();
 			super.dispose();
 		}
 	}
