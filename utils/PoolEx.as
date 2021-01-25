@@ -5,6 +5,7 @@
 
 package starlingEx.utils {
 
+	import starling.errors.AbstractClassError;
 	import starlingEx.utils.Utils;
 
 	public class PoolEx {
@@ -59,8 +60,7 @@ package starlingEx.utils {
 			}
 		}
 
-		public function PoolEx() {}
-
+		public function PoolEx() {throw new AbstractClassError();}
 	}
 
 }
