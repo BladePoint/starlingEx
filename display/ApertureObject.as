@@ -111,7 +111,6 @@ package starlingEx.display {
 			_hex = newHex;
 			calcRGB();
 		}
-
 	}
-	
+
 }
