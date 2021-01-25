@@ -226,5 +226,5 @@ package starlingEx.display {
 			super.dispose();
 		}
 	}
-	
+
 }
