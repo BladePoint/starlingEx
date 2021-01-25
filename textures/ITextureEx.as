@@ -7,13 +7,13 @@ package starlingEx.textures {
 
 	import starling.textures.Texture;
 
-	public interface ITextureOnDemand {
-
-		function calcTextureDimensions():void;
+	public interface ITextureEx {
 		function get textureWidth():uint;
 		function get textureHeight():uint;
 		function get texture():Texture;
-
+		function get textureMultiplier():Number;
+		function get quadW():Number;
+		function get quadH():Number;
 	}
-	
+
 }
