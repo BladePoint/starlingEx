@@ -13,7 +13,6 @@ package starlingEx.display {
 	import starling.core.Starling;
 	import starling.utils.Color;
 	import starlingEx.animation.TweenEx;
-	import starlingEx.animation.TweenObject;
 	import starlingEx.display.IAperture;
 	import starlingEx.display.IApertureMesh;
 	import starlingEx.display.IApertureDisplayObjectContainer;
@@ -83,18 +82,18 @@ package starlingEx.display {
 			const updateA:Array = PoolEx.getArray(),
 				completeA:Array = PoolEx.getArray();
 			tween.onUpdate = updateTween;
-			updateA.push(iAperture,tween.tweenObject,initR,initG,initB,finalR,finalG,finalB);
+			updateA.push(iAperture,tween,initR,initG,initB,finalR,finalG,finalB);
 			tween.onUpdateArgs = updateA;
 			tween.onComplete = completeTween;
 			completeA.push(tween,updateA,completeA,onComplete,onCompleteDelay,juggler);
 			tween.onCompleteArgs = completeA;
 			juggler.add(tween);
 		}
-		static private function updateTween(iAperture:IAperture,tweenObject:TweenObject,initR:uint,initG:uint,initB:uint,finalR:uint,finalG:uint,finalB:uint):void {
-			const complement:Number = 1 - tweenObject.t;
-			const r:uint = Math.round(initR*complement+finalR*tweenObject.t),
-				g:uint = Math.round(initG*complement+finalG*tweenObject.t),
-				b:uint = Math.round(initB*complement+finalB*tweenObject.t);
+		static private function updateTween(iAperture:IAperture,tween:TweenEx,initR:uint,initG:uint,initB:uint,finalR:uint,finalG:uint,finalB:uint):void {
+			const complement:Number = 1 - tween.t;
+			const r:uint = Math.round(initR*complement+finalR*tween.t),
+				g:uint = Math.round(initG*complement+finalG*tween.t),
+				b:uint = Math.round(initB*complement+finalB*tween.t);
 			iAperture.setRGB(r,g,b);
 		}
 		static private function completeTween(tween:TweenEx,updateA:Array,completeA:Array,onComplete:Function,delay:Number,juggler:Juggler):void {
@@ -111,7 +110,6 @@ package starlingEx.display {
 		}
 
 		public function ApertureUtils() {throw new AbstractClassError();}
-
 	}
-	
+
 }
