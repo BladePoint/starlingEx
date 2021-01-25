@@ -52,6 +52,7 @@ package starlingEx.styles {
 			outerMult_AO = ApertureObject.getInstance(0x000000);
 		}
 		override public function copyFrom(meshStyle:MeshStyle):void {
+			super.copyFrom(meshStyle);
 			const otherStyle:ApertureDistanceFieldStyle = meshStyle as ApertureDistanceFieldStyle;
 			if (otherStyle) {
 				_mode = otherStyle._mode;
@@ -67,7 +68,6 @@ package starlingEx.styles {
 				outerTrue_AO.hex = otherStyle.outerTrue_AO.hex;
 				outerMult_AO.hex = otherStyle.outerMult_AO.hex;
 			}
-			super.copyFrom(meshStyle);
 		}
 		override public function createEffect():MeshEffect {
 			return new DistanceFieldEffect();
@@ -288,7 +288,6 @@ package starlingEx.styles {
 			ApertureObject.putInstance(outerMult_AO);
 			outerTrue_AO = outerMult_AO = null;
 		}
-
 	}
 
 }
