@@ -9,10 +9,12 @@ package starlingEx.textures {
 	import flash.display.IBitmapDrawable;
 	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
+	
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 	import starling.textures.Texture;
 	import starling.utils.Pool;
+	
 	import starlingEx.textures.DynamicAtlas;
 	import starlingEx.textures.ITextureEx;
 
@@ -53,39 +55,23 @@ package starlingEx.textures {
 		protected function setOriginalDimensions(iBitmapDrawable:IBitmapDrawable):void {
 			calcTextureDimensions();
 		}
-		public function setSourcePosition(positionX:uint,positionY:uint):void {
-			sourceX = positionX;
-			sourceY = positionY;
-		}
-		public function set sourceX(positionX:Number):void {
-			if (positionX+sourceW > originalW) throw new ArgumentError(sourceAreaError);
-			else _sourceX = positionX;
+		public function setSourceArea(x:Number,y:Number,w:Number,h:Number):void {
+			if (isNaN(x)) x = 0;
+			if (isNaN(y)) y = 0;
+			if (isNaN(w)) w = originalW;
+			if (isNaN(h)) h = originalH;
+			if (x+w > originalW || y+h > originalH) throw new ArgumentError(sourceAreaError);
+			else {
+				_sourceX = x;
+				_sourceY = y;
+				cropW = originalW - w;
+				cropH = originalH - h;
+				calcTextureDimensions();
+			}
 		}
 		public function get sourceX():Number {return _sourceX;}
-		public function set sourceY(positionY:Number):void {
-			if (positionY+sourceH > originalH) throw new ArgumentError(sourceAreaError);
-			else _sourceY = positionY;
-		}
 		public function get sourceY():Number {return _sourceY;}
-		public function setSourceDimensions(w:Number,h:Number):void {
-			sourceW = w;
-			sourceH = h;
-		}
-		public function set sourceW(w:Number):void {
-			if (_sourceX+w > originalW) throw new ArgumentError(sourceAreaError);
-			else {
-				cropW = originalW - w;
-				calcTextureWidth();
-			}
-		}
 		public function get sourceW():Number {return originalW - cropW;}
-		public function set sourceH(h:Number):void {
-			if (_sourceY+h > originalH) throw new ArgumentError(sourceAreaError);
-			else {
-				cropH = originalH - h;
-				calcTextureHeight();
-			}
-		}
 		public function get sourceH():Number {return originalH - cropH;}
 		public function get textureMultiplier():Number {return _textureMultiplier;}
 		/* The width of transparent padding to go around and be included in texture. Padding is necessary when a rounded texture touches the edge.
@@ -104,13 +90,7 @@ package starlingEx.textures {
 		}
 		public function get atlasExtrude():Boolean {return _atlasExtrude;}
 		private function calcTextureDimensions():void {
-			calcTextureWidth();
-			calcTextureHeight();
-		}
-		private function calcTextureWidth():void {
 			_textureWidth = Math.ceil(sourceW) + _texturePadding*2;
-		}
-		private function calcTextureHeight():void {
 			_textureHeight = Math.ceil(sourceH) + _texturePadding*2;
 		}
 		public function get textureWidth():uint {return _textureWidth;}
