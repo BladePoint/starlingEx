@@ -7,6 +7,7 @@ package starlingEx.utils {
 
 	import flash.utils.Dictionary;
 	import mx.utils.NameUtil;
+	import starling.errors.AbstractClassError;
 
 	public class Utils {
 		static private var lowercaseCache:Dictionary;
@@ -39,18 +40,23 @@ package starlingEx.utils {
 			return NameUtil.createUniqueName(object);
 		}
 		static public function nextPowerOfTwo(i:uint):uint {
-			i--;
-			i |= i >> 1;
-			i |= i >> 2;
-			i |= i >> 4;
-			i |= i >> 8;
-			i |= i >> 16;
-			i++;
-			return i;
+			var result:uint = 1;
+			while (result < i) result <<= 1;
+			return result;
+		}
+		static public function previousPowerOfTwo(i:uint):uint {
+			var next:uint = nextPowerOfTwo(i);
+			if (next == i) return i;
+			else return next >>= 1;
+		}
+		static public function setPrecision(num:Number,decimals:int,roundUp:Boolean=false):Number {
+			const m:int = Math.pow(10,decimals);
+			var mathFunction:Function = Math.round;
+			if (roundUp) mathFunction = Math.ceil;
+			return mathFunction(num * m) / m;
 		}
 
-		public function Utils() {}
-
+		public function Utils() {throw new AbstractClassError();}
 	}
 
 }
