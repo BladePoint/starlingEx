@@ -56,7 +56,7 @@ Use the setWhiteTexture(x:uint,y:uint) method and pass in the coordinates of a 1
 A DynamicAtlas takes multiple BitmapDatas and packs them into a small power-of-two-sized Texture. You can save some GPU memory by doing this, and if your Quads which use that texture all have the same style, you can save draw calls as well. BitmapDatas to be packed by a DynamicAtlas first have to go into a TextureBitmapData.
 
 ## TextureBitmapData
-The constructor of a TextureBitmapData takes the source BitmapData as the sole parameter. If you're only using a portion of the source BitmapData, use setSourcePosition to specify the coordinates of the section you want to use, and setSourceDimensions to specify its width and height. Use a TextureBitmapData's texture property to return a Texture generated from that section of the source BitmapData. If you pack the TextureBitmapData into a DynamicAtlas before using it's texture property, it will return a SubTexture from the DynamicAtlas.
+The constructor of a TextureBitmapData takes the source BitmapData as the sole parameter. If you're only using a portion of the source BitmapData, use setSourceArea to specify the coordinates of the section you want to use and its width and height. Use a TextureBitmapData's texture property to return a Texture generated from that section of the source BitmapData. If you pack the TextureBitmapData into a DynamicAtlas before using it's texture property, it will return a SubTexture from the DynamicAtlas.
 
 Heres an example showing how some of all this works:
 ```
