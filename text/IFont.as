@@ -7,15 +7,16 @@ package starlingEx.text {
 
 	import starling.textures.Texture;
 	import starlingEx.display.ApertureQuad;
+	import starlingEx.display.QuadDrawable;
 	import starlingEx.text.TextFormatEx;
+	import starlingEx.textures.TextureDrawable;
 
 	/* All fonts used with TextFormatEx must implement IFont. */
 	public interface IFont {
-
 		function initFormat(textFormat:TextFormatEx):void;
 		function getChar(charID:int):BitmapCharEx;
-		function getCharQuad():ApertureQuad;
-		function putCharQuad(charQuad:ApertureQuad):void;
+		function getCharQuad(textureDrawable:TextureDrawable):QuadDrawable;
+		function putCharQuad(charQuad:QuadDrawable):void;
 		function getLineQuad(w:Number,h:Number):ApertureQuad;
 		function putLineQuad(lineQuad:ApertureQuad):void;
 		function getWhiteTexture():Texture;
@@ -38,7 +39,6 @@ package starlingEx.text {
 		function set baselineProportion(decimal:Number):void;
 		function get underlineProportion():Number;
 		function set underlineProportion(decimal:Number):void;
-
 	}
 
 }
