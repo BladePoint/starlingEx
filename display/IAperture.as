@@ -8,7 +8,6 @@ package starlingEx.display {
 	import starlingEx.display.ApertureObject;
 
 	public interface IAperture {
-
 		function setHex(colorHex:uint=0xffffff,apply:Boolean=true):void;
 		function getHex(index:uint=0):uint;
 		function setRGB(r:uint=255,g:uint=255,b:uint=255,apply:Boolean=true):void;
@@ -18,7 +17,6 @@ package starlingEx.display {
 		function get apertureLock():Boolean;
 		function multiplyColor():void;
 		function calcMult(parentMult_AO:ApertureObject,index:uint=0):void;
-
 	}
 
 }
