@@ -104,7 +104,6 @@ package starlingEx.text {
 			if (value is Array) PoolEx.putArray(value);
 			value = null;
 		}
-
 	}
 
 }
