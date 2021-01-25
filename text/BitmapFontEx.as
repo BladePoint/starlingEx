@@ -178,8 +178,7 @@ package starlingEx.text {
 		}
 		private function initCharTextureBitmap(id:int,x:Number,y:Number,width:Number,height:Number,bitmapChar:BitmapCharEx):void {
 			const textureBitmapData:TextureBitmapData = TextureBitmapData.getInstance(fontBitmapData);
-			textureBitmapData.setSourceDimensions(width,height);
-			textureBitmapData.setSourcePosition(x,y);
+			textureBitmapData.setSourceArea(x,y,width,height);
 			bitmapChar.initTextureBitmap(textureBitmapData);
 			dynamicAtlas.addDrawable(textureBitmapData);
 			addChar(id,bitmapChar);
