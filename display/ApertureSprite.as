@@ -77,6 +77,6 @@ package starlingEx.display {
 			true_AO = mult_AO = null;
 			super.dispose();
 		}
-
 	}
+
 }
