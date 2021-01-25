@@ -48,8 +48,7 @@ package starlingEx.animation {
 			return .5*(Math.pow(ratio,5) + 2);
 		}
 
-		public function TransitionsExtended() {throw new AbstractClassError();}
-
+		public function TransitionsEx() {throw new AbstractClassError();}
 	}
 
 }
