@@ -19,6 +19,8 @@ package starlingEx.text {
 	import starling.utils.Pool;
 	import starling.utils.StringUtil;
 	import starlingEx.display.ApertureQuad;
+	import starlingEx.display.QuadDrawable;
+	import starlingEx.events.EventEx;
 	import starlingEx.styles.ApertureDistanceFieldStyle;
 	import starlingEx.text.BitmapCharEx;
 	import starlingEx.text.Compositor;
@@ -26,8 +28,8 @@ package starlingEx.text {
 	import starlingEx.text.TextFormatEx;
 	import starlingEx.textures.DynamicAtlas;
 	import starlingEx.textures.TextureBitmapData;
+	import starlingEx.textures.TextureDrawable;
 	import starlingEx.utils.PoolEx;
-	import starlingEx.utils.RectanglePacker;
 
 	/* A BitmapFontEx is a class for bitmap fonts to be used with TextFieldEx. Multiple BitmapFontEx instances can be used with a single DynamicAtlas
 	   in order to reduce draw calls. Some of this code is appropriated from starling.text.BitmapFont. */
@@ -98,8 +100,8 @@ package starlingEx.text {
 			if (dynamicAtlas) {
 				fontBitmapData = fontAtlas_BMD;
 				parseXmlData(fontXML);
-				dynamicAtlas.addEventListener(RectanglePacker.SUCCESS,packSuccess);
-				dynamicAtlas.addEventListener(RectanglePacker.FAILURE,packFailure);
+				dynamicAtlas.addEventListener(EventEx.SUCCESS,packSuccess);
+				dynamicAtlas.addEventListener(EventEx.FAILURE,packFailure);
 				this.dynamicAtlas = dynamicAtlas;
 				initCharFunction = initCharTextureBitmap;
 				parseXmlChar(fontXML);
@@ -175,11 +177,11 @@ package starlingEx.text {
 			addChar(id,bitmapChar);
 		}
 		private function initCharTextureBitmap(id:int,x:Number,y:Number,width:Number,height:Number,bitmapChar:BitmapCharEx):void {
-			const textureBitmapData:TextureBitmapData = new TextureBitmapData(fontBitmapData);
+			const textureBitmapData:TextureBitmapData = TextureBitmapData.getInstance(fontBitmapData);
 			textureBitmapData.setSourceDimensions(width,height);
-			textureBitmapData.setSourceOffset(x,y);
+			textureBitmapData.setSourcePosition(x,y);
 			bitmapChar.initTextureBitmap(textureBitmapData);
-			dynamicAtlas.addRectangle(textureBitmapData);
+			dynamicAtlas.addDrawable(textureBitmapData);
 			addChar(id,bitmapChar);
 		}
 		public function initFormat(format:TextFormatEx):void {
@@ -215,19 +217,23 @@ package starlingEx.text {
 		public function get sinItalicRadians():Number {
 			return _sinItalicRadians;
 		}
-		public function getCharQuad():ApertureQuad {
-			var charQuad:ApertureQuad;
+		public function getCharQuad(textureDrawable:TextureDrawable):QuadDrawable {
+			var charQuad:QuadDrawable;
 			if (charQuadA.length == 0) {
 				Mesh.defaultStyleFactory = charQuadStyleFactory;
-				charQuad = new ApertureQuad();
+				charQuad = new QuadDrawable(textureDrawable);
 				Mesh.defaultStyleFactory = null;
 			}
-			else charQuad = charQuadA.pop();
+			else {
+				charQuad = charQuadA.pop();
+				charQuad.assignTextureEx(textureDrawable);
+			}
 			charQuad.touchable = false;
 			return charQuad;
 		}
-		public function putCharQuad(charQuad:ApertureQuad):void {
+		public function putCharQuad(charQuad:QuadDrawable):void {
 			if (charQuad) {
+				charQuad.assignTextureEx(null);
 				charQuad.alignPivot(Align.LEFT,Align.TOP);
 				charQuad.skewX = 0;
 				charQuadA[charQuadA.length] = charQuad;
@@ -241,13 +247,15 @@ package starlingEx.text {
 		public function getLineQuad(w:Number,h:Number):ApertureQuad {
 			var lineQuad:ApertureQuad;
 			if (lineQuadA.length == 0) {
-				Mesh.defaultStyle = ApertureDistanceFieldStyle;
-				lineQuad = new ApertureQuad(w,h);
-				Mesh.defaultStyle = MeshStyle;
-				lineQuad.texture = getWhiteTexture();
-				const adfs:ApertureDistanceFieldStyle = lineQuad.style as ApertureDistanceFieldStyle;
-				adfs.multiChannel = multiChannel;
-				adfs.setupOutline(0,0x000000,1,false);
+				Mesh.defaultStyleFactory = lineQuadStyleFactory;
+				if (dynamicAtlas) {
+					lineQuad = new QuadDrawable(dynamicAtlas.white_TBD);
+					lineQuad.readjustSize(w,h);
+				} else {
+					lineQuad = new ApertureQuad(w,h);
+					lineQuad.texture = getWhiteTexture();
+				}
+				Mesh.defaultStyleFactory = null;
 			} else {
 				lineQuad = lineQuadA.pop();
 				lineQuad.readjustSize(w,h);
@@ -258,13 +266,19 @@ package starlingEx.text {
 		public function putLineQuad(lineQuad:ApertureQuad):void {
 			if (lineQuad) lineQuadA[lineQuadA.length] = lineQuad;
 		}
+		private function lineQuadStyleFactory():ApertureDistanceFieldStyle {
+			const apertureDistanceFieldStyle:ApertureDistanceFieldStyle = new ApertureDistanceFieldStyle();
+			apertureDistanceFieldStyle.multiChannel = multiChannel;
+			apertureDistanceFieldStyle.setupOutline(0,0x000000,1,false);
+			return apertureDistanceFieldStyle;
+		}
 		public function setWhiteTexture(whiteX:uint,whiteY:uint):void {
 			this.whiteX = whiteX;
 			this.whiteY = whiteY;
 		}
 		public function getWhiteTexture():Texture {
 			var returnTexture:Texture;
-			if (dynamicAtlas) returnTexture = dynamicAtlas.white_TB.texture;
+			if (dynamicAtlas) returnTexture = dynamicAtlas.white_TBD.texture;
 			else if (fontTexture && whiteX >=0 && whiteY >= 0) {
 				if (whiteTexture == null) {
 					const region:Rectangle = Pool.getRectangle(whiteX,whiteY,1,1);
@@ -274,6 +288,10 @@ package starlingEx.text {
 				returnTexture = whiteTexture;
 			}
 			return returnTexture;
+		}
+		public function getWhiteTBD():TextureBitmapData {
+			if (dynamicAtlas) return dynamicAtlas.white_TBD;
+			else return null;
 		}
 		public function get lineThicknessProportion():Number {
 			return _lineThicknessProportion;
@@ -307,8 +325,8 @@ package starlingEx.text {
 			disposeSourceBitmapData();
 		}
 		private function removePackListeners():void {
-			dynamicAtlas.removeEventListener(RectanglePacker.SUCCESS,packSuccess);
-			dynamicAtlas.removeEventListener(RectanglePacker.SUCCESS,packFailure);
+			dynamicAtlas.removeEventListener(EventEx.SUCCESS,packSuccess);
+			dynamicAtlas.removeEventListener(EventEx.FAILURE,packFailure);
 		}
 		private function disposeSourceBitmapData():void {
 			if (fontBitmapData) {
@@ -325,8 +343,7 @@ package starlingEx.text {
 					const bitmapChar:BitmapCharEx = _chars[charID];
 					if (bitmapChar.textureBitmapData) {
 						const textureBitmapData:TextureBitmapData = bitmapChar.textureBitmapData;
-						if (dynamicAtlas) dynamicAtlas.removeRectangle(textureBitmapData);
-						textureBitmapData.dispose();
+						TextureBitmapData.putInstance(textureBitmapData);
 					} else if (bitmapChar.texture) {
 						const texture:Texture = bitmapChar.texture;
 						texture.dispose();
@@ -342,7 +359,10 @@ package starlingEx.text {
 			PoolEx.putArray(lineQuadA);
 			charQuadA = lineQuadA = null;
 			initCharFunction = null;
-			dynamicAtlas = null;
+			if (dynamicAtlas) {
+				removePackListeners();
+				dynamicAtlas = null;
+			}
 			if (fontTexture) {
 				fontTexture.root.onRestore = null;
 				fontTexture.dispose();
@@ -352,7 +372,6 @@ package starlingEx.text {
 				whiteTexture.dispose();
 				whiteTexture = null;
 			}
-			removePackListeners();
 			disposeSourceBitmapData();
 		}
 		private function disposeQuadArray(array:Array):void {
