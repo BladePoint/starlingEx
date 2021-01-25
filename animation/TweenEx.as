@@ -26,7 +26,7 @@ package starlingEx.animation {
 			}
 		}
 		
-		public var tweenObject:TweenObject;
+		private var tweenObject:TweenObject;
 		public function TweenEx(target:Object,time:Number,transition:Object="linear") {
 			var superTarget:Object;
 			if (target is Number) superTarget = tweenObject = TweenObject.getInstance(target as Number);
@@ -36,6 +36,13 @@ package starlingEx.animation {
 		public function animateEx(endValue:Number):void {
 			if (tweenObject) animate("t",endValue);
 			else throw new Error("TweenObject does not exist.");
+		}
+		public function get t():Number{
+			if (tweenObject) return tweenObject.t;
+			else return NaN;
+		}
+		public function set t(value:Number):void {
+			if (tweenObject) tweenObject.t = t;
 		}
 		override public function reset(target:Object,time:Number,transition:Object="linear"):Tween {
 			if (target is Number) {
@@ -61,7 +68,6 @@ package starlingEx.animation {
 		public function dispose():void {
 			reset(null,0);
 		}
-
 	}
 
 }
