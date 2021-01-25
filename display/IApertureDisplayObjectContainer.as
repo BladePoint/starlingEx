@@ -9,12 +9,10 @@ package starlingEx.display {
 	import starlingEx.display.ApertureObject;
 
 	public interface IApertureDisplayObjectContainer {
-
 		function getMultHex():uint;
 		function getMultRGB():Array;
 		function getMultAO():ApertureObject;
 		function addChild(child:DisplayObject):DisplayObject;
-
 	}
 
 }
