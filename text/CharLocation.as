@@ -10,8 +10,8 @@ package starlingEx.text {
 	import starling.textures.Texture;
 	import starling.utils.Align;
 	import starling.utils.MathUtil;
-	
 	import starlingEx.display.ApertureQuad;
+	import starlingEx.display.QuadDrawable;
 	import starlingEx.styles.ApertureDistanceFieldStyle;
 	import starlingEx.text.BitmapCharEx;
 	import starlingEx.text.IFont;
@@ -62,7 +62,7 @@ package starlingEx.text {
 			var lineThicknessProportion:Number = iFont.lineThicknessProportion;
 			if (isNaN(lineThicknessProportion)) lineThicknessProportion = Compositor.defaultLineThicknessProportion;
 			const fontSize:Number = TagObject.getSize(tagObject,formatSize);
-			const lineThickness:Number = Math.max(1,Math.round(fontSize*lineThicknessProportion));
+			const lineThickness:Number = MathUtil.max(1,Math.round(fontSize*lineThicknessProportion));
 			return lineThickness;
 		}
 		static private function getTagSizeOffsetY(fontHeight:Number,formatScale:Number,tagScale:Number,currentFont:IFont):Number {
@@ -70,7 +70,7 @@ package starlingEx.text {
 		}
 		static private function getOuterH(charLocation:CharLocation,innerH:uint):uint {
 			var outlineRatio:Number;
-			const charQuad:ApertureQuad = charLocation._quad; 
+			const charQuad:QuadDrawable = charLocation._quad; 
 			if (charQuad) {
 				if (charQuad.style is DistanceFieldStyle) {
 					const dfs:DistanceFieldStyle = charQuad.style as DistanceFieldStyle;
@@ -186,7 +186,7 @@ package starlingEx.text {
 		internal var textLink:TextLink;
 		private var textFormat:TextFormatEx;
 		private var tagObject:TagObject;
-		private var _quad:ApertureQuad, _shadowQuad:ApertureQuad;
+		private var _quad:QuadDrawable, _shadowQuad:QuadDrawable;
 		public function CharLocation(char:BitmapCharEx,textFormat:TextFormatEx,tagObject:TagObject) {
 			init(char,textFormat,tagObject);
 		}
@@ -197,8 +197,7 @@ package starlingEx.text {
 		}
 		internal function initQuad():void {
 			const iFont:IFont = char.font;
-			_quad = iFont.getCharQuad();
-			_quad.texture = char.texture;
+			_quad = iFont.getCharQuad(char.textureBitmapData);
 			_quad.readjustSize();
 			_quad.x = x;
 			_quad.y = y;
@@ -504,8 +503,17 @@ package starlingEx.text {
 		public function initShadow():void {
 			if (_quad) {
 				const iFont:IFont = char.font;
-				_shadowQuad = iFont.getCharQuad();
-				_shadowQuad.style.copyFrom(_quad.style);
+				_shadowQuad = iFont.getCharQuad(_quad.textureDrawable);
+				_shadowQuad.texture = _quad.texture;
+				if (_quad.style is ApertureDistanceFieldStyle) {
+					const shadow_ADFS:ApertureDistanceFieldStyle = _shadowQuad.style as ApertureDistanceFieldStyle,
+						source_ADFS:ApertureDistanceFieldStyle = _quad.style as ApertureDistanceFieldStyle;
+					shadow_ADFS.mode = source_ADFS.mode;
+					shadow_ADFS.threshold = source_ADFS.threshold
+					shadow_ADFS.outerThreshold = source_ADFS.outerThreshold;
+					shadow_ADFS.outerAlphaStart = source_ADFS.outerAlphaStart;
+					shadow_ADFS.outerAlphaEnd = source_ADFS.outerAlphaEnd;
+				}
 				_shadowQuad.readjustSize();
 				_shadowQuad.scale = _quad.scale;
 				_shadowQuad.pivotX = _quad.pivotX;
@@ -536,10 +544,10 @@ package starlingEx.text {
 				}
 			}
 		}
-		public function get quad():ApertureQuad {
+		public function get quad():QuadDrawable {
 			return _quad;
 		}
-		public function get shadowQuad():ApertureQuad {
+		public function get shadowQuad():QuadDrawable {
 			return _shadowQuad;
 		}
 		public function reset():void {
@@ -584,7 +592,6 @@ package starlingEx.text {
 		public function dispose():void {
 			reset();
 		}
-
 	}
 
 }
