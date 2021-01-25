@@ -112,7 +112,6 @@ package starlingEx.text {
 		public function dispose():void {
 			reset();
 		}
-
 	}
 
 }
