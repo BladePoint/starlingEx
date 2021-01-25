@@ -75,17 +75,13 @@ package starlingEx.text {
 		public function get textureBitmapData():TextureBitmapData {return _textureBitmapData;}
 		public function get width():Number {
 			if (_texture) return _texture.width;
-			else if (_textureBitmapData) {
-				if (_textureBitmapData.textureWidth == 0) _textureBitmapData.calcTextureDimensions();
-				return _textureBitmapData.textureWidth;
-			} else return 0;
+			else if (_textureBitmapData) return _textureBitmapData.textureWidth;
+			else return 0;
 		}
 		public function get height():Number {
 			if (_texture) return _texture.height;
-			else if (_textureBitmapData) {
-				if (_textureBitmapData.textureHeight == 0) _textureBitmapData.calcTextureDimensions();
-				return _textureBitmapData.textureHeight;
-			} else return 0;
+			else if (_textureBitmapData) return _textureBitmapData.textureHeight;
+			else return 0;
 		}
 		public function reset():void {
 			_iFont = null;
