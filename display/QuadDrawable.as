@@ -39,7 +39,7 @@ package starlingEx.display {
 		}
 		public function demandTexture(evt:Event=null):void {
 			texture = _textureDrawable.texture;
-			readjustSize();
+			readjustSize(_textureDrawable.quadW,_textureDrawable.quadH);
 		}
 		public function get textureDrawable():TextureDrawable {
 			return _textureDrawable;
