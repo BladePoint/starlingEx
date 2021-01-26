@@ -22,7 +22,10 @@ package starlingEx.display {
 		}
 		public function assignTextureEx(iTextureEx:ITextureEx):void {
 			this.iTextureEx = iTextureEx;
-			if (iTextureEx) texture = iTextureEx.texture;
+			if (iTextureEx) {
+				texture = iTextureEx.texture;
+				readjustSize(iTextureEx.quadW,iTextureEx.quadH);
+			}
 			else texture = null;
 		}
 		override public function dispose():void {
