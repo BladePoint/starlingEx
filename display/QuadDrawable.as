@@ -15,7 +15,7 @@ package starlingEx.display {
 		private var _textureDrawable:TextureDrawable;
 		public function QuadDrawable(textureDrawable:TextureDrawable=null) {
 			super(textureDrawable);
-			addEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
+			onRemovedFromStage();
 		}
 		override public function assignTextureEx(iTextureEx:ITextureEx):void {
 			this.iTextureEx = iTextureEx;
@@ -28,12 +28,18 @@ package starlingEx.display {
 				_textureDrawable.addEventListener(Event.CHANGE,demandTexture);
 			}
 		}
+		private function onRemovedFromStage(evt:Event=null):void {
+			removeEventListener(Event.REMOVED_FROM_STAGE,onRemovedFromStage);
+			addEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
+		}
 		private function onAddedToStage(evt:Event):void {
 			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
+			addEventListener(Event.REMOVED_FROM_STAGE,onRemovedFromStage);
 			demandTexture();
 		}
 		public function demandTexture(evt:Event=null):void {
 			texture = _textureDrawable.texture;
+			readjustSize();
 		}
 		public function get textureDrawable():TextureDrawable {
 			return _textureDrawable;
