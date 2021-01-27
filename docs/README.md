@@ -53,7 +53,7 @@ Compositor.registerFont(arial_BFX,"arial");
 Use the setWhiteTexture(x:uint,y:uint) method and pass in the coordinates of a 1x1 section of the texture that is purely white. This subtexture will be used when drawing strikethroughs and underlines to prevent an additional draw call. This method is not necessary if you are using a DynamicAtlas.
 
 ## DynamicAtlas
-A DynamicAtlas takes multiple BitmapDatas and packs them into a small power-of-two-sized Texture. You can save some GPU memory by doing this, and if your Quads which use that texture all have the same style, you can save draw calls as well. BitmapDatas to be packed by a DynamicAtlas first have to go into a TextureBitmapData.
+A DynamicAtlas takes multiple BitmapDatas and packs them into a small power-of-two-sized Texture. You can save some GPU memory by doing this, and if your Quads which use that texture all have the same style, you can save draw calls as well. BitmapDatas to be packed by a DynamicAtlas first have to go into a TextureBitmapData. If you plan on packing the DynamicAtlas multiple times, set drawToBounds to false.
 
 ## TextureBitmapData
 The constructor of a TextureBitmapData takes the source BitmapData as the sole parameter. If you're only using a portion of the source BitmapData, use setSourceArea to specify the coordinates of the section you want to use and its width and height. Use a TextureBitmapData's texture property to return a Texture generated from that section of the source BitmapData. If you pack the TextureBitmapData into a DynamicAtlas before using it's texture property, it will return a SubTexture from the DynamicAtlas.
