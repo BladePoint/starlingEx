@@ -312,26 +312,14 @@ package starlingEx.text {
 		}
 		private function packSuccess(evt:Event):void {
 			removePackListeners();
-			disposeSourceBitmapData();
 		}
 		private function packFailure(evt:Event):void {
 			removePackListeners();
 			dynamicAtlas = null;
-			for (var charID:int in _chars) {
-				const bitmapChar:BitmapCharEx = _chars[charID];
-				const texture:Texture = bitmapChar.texture;
-			}
-			disposeSourceBitmapData();
 		}
 		private function removePackListeners():void {
 			dynamicAtlas.removeEventListener(EventEx.SUCCESS,packSuccess);
 			dynamicAtlas.removeEventListener(EventEx.FAILURE,packFailure);
-		}
-		private function disposeSourceBitmapData():void {
-			if (fontBitmapData) {
-				fontBitmapData.dispose();
-				fontBitmapData = null;
-			}
 		}
 		public function reset():void {
 			threshold = Compositor.defaultThreshold;
@@ -371,7 +359,10 @@ package starlingEx.text {
 				whiteTexture.dispose();
 				whiteTexture = null;
 			}
-			disposeSourceBitmapData();
+			if (fontBitmapData) {
+				fontBitmapData.dispose();
+				fontBitmapData = null;
+			}
 		}
 		private function disposeQuadArray(array:Array):void {
 			const l:uint = array.length;
