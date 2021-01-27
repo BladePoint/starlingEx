@@ -11,7 +11,6 @@ package starlingEx.text {
 	import flash.utils.Dictionary;
 	import starling.display.Mesh;
 	import starling.events.Event;
-	import starling.styles.MeshStyle;
 	import starling.text.BitmapFontType;
 	import starling.textures.Texture;
 	import starling.textures.TextureSmoothing;
@@ -28,7 +27,6 @@ package starlingEx.text {
 	import starlingEx.text.TextFormatEx;
 	import starlingEx.textures.DynamicAtlas;
 	import starlingEx.textures.TextureBitmapData;
-	import starlingEx.textures.TextureDrawable;
 	import starlingEx.utils.PoolEx;
 
 	/* A BitmapFontEx is a class for bitmap fonts to be used with TextFieldEx. Multiple BitmapFontEx instances can be used with a single DynamicAtlas
@@ -216,23 +214,34 @@ package starlingEx.text {
 		public function get sinItalicRadians():Number {
 			return _sinItalicRadians;
 		}
-		public function getCharQuad(textureDrawable:TextureDrawable):QuadDrawable {
-			var charQuad:QuadDrawable;
+		public function getCharQuad(char:BitmapCharEx):ApertureQuad {
+			const textureBitmapData:TextureBitmapData = char.textureBitmapData;
+			var charQuad:ApertureQuad;
 			if (charQuadA.length == 0) {
 				Mesh.defaultStyleFactory = charQuadStyleFactory;
-				charQuad = new QuadDrawable(textureDrawable);
+				if (textureBitmapData) charQuad = new QuadDrawable(textureBitmapData) as ApertureQuad;
+				else {
+					charQuad = new ApertureQuad();
+					charQuad.texture = char.texture;
+				}
 				Mesh.defaultStyleFactory = null;
 			}
 			else {
 				charQuad = charQuadA.pop();
-				charQuad.assignTextureEx(textureDrawable);
+				if (textureBitmapData) {
+					const quadDrawable:QuadDrawable = charQuad as QuadDrawable;
+					quadDrawable.assignTextureEx(char.textureBitmapData);
+				} else charQuad.texture = char.texture;
 			}
 			charQuad.touchable = false;
 			return charQuad;
 		}
-		public function putCharQuad(charQuad:QuadDrawable):void {
+		public function putCharQuad(charQuad:ApertureQuad):void {
 			if (charQuad) {
-				charQuad.assignTextureEx(null);
+				if (charQuad is QuadDrawable) {
+					const quadDrawable:QuadDrawable = charQuad as QuadDrawable;
+					quadDrawable.assignTextureEx(null);
+				} else charQuad.texture = null;
 				charQuad.alignPivot(Align.LEFT,Align.TOP);
 				charQuad.skewX = 0;
 				charQuadA[charQuadA.length] = charQuad;
