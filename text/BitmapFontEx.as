@@ -49,7 +49,8 @@ package starlingEx.text {
 			}
 		}
 
-		public var threshold:Number = Compositor.defaultThreshold;
+		public var threshold:Number = Compositor.defaultThreshold,
+			softness:Number;
 		private var _characters:String, _name:String, _smoothing:String, _type:String;
 		private var _chars:Dictionary;
 		private var _offsetX:Number, _offsetY:Number, _padding:Number, _size:Number, _lineHeight:Number, _baseline:Number, _distanceFieldSpread:Number, _italicRadians:Number, _sinItalicRadians:Number, _lineThicknessProportion:Number, _baselineProportion:Number, _underlineProportion:Number, charQuadFactorySoftness:Number;
@@ -183,7 +184,10 @@ package starlingEx.text {
 		}
 		public function initFormat(format:TextFormatEx):void {
 			if (format.softness >= 0) charQuadFactorySoftness = format.softness;
-			else charQuadFactorySoftness = _size / (format.size * _distanceFieldSpread);
+			else {
+				if (!isNaN(softness)) charQuadFactorySoftness = softness;
+				else charQuadFactorySoftness = _size / (format.size * _distanceFieldSpread);
+			}
 		}
 		public function get name():String {return _name;}
 		public function get size():Number {return _size;}
