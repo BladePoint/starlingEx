@@ -43,7 +43,8 @@ package starlingEx.textures {
 		}
 
 		public var texture:Texture;
-		/* If true, draws the smallest possible bitmapData. If false, draws a bitmapData that is the same size as the container rectangle. */
+		/* If true, draws the smallest possible bitmapData. If false, draws a bitmapData that is the same size as the container rectangle. Set to false
+		   if you plan on using the packMore method.*/
 		public var drawToBounds:Boolean = true,
 			mipMapping:Boolean;
 		private var _white_TBD:TextureBitmapData;
@@ -130,8 +131,8 @@ package starlingEx.textures {
 				vector3D.y = MathUtil.max(vector3D.y,rect.height);
 			}
 		}
-		override protected function sortNotPacked():void {
-			notPackedA.sort(sortByHeightAscending);
+		override protected function sort(array:Array):void {
+			array.sort(sortByHeightAscending);
 		}
 		private function sortByHeightAscending(element1:*,element2:*):int {
 			var height1:Number = getElementHeight(element1),
@@ -209,8 +210,8 @@ package starlingEx.textures {
 		private function copyTextureBitmap(textureBitmapData:TextureBitmapData,cleanTargetArea:Boolean=false):void {
 			if (cleanTargetArea) bitmapData.fillRect(textureBitmapData.atlasRect,TextureDrawable.transparentGreenHex);
 			textureBitmapData.copyPixelsTo(bitmapData);
-			if (textureBitmapData.whiteFill) TextureDrawable.applyWhiteTransform(bitmapData,textureBitmapData.atlasRect);
-			if (textureBitmapData.atlasExtrude) extrude(textureBitmapData.atlasRect);
+			if (textureBitmapData.whiteFill) TextureDrawable.applyWhiteTransform(bitmapData,textureBitmapData.textureRect);
+			if (textureBitmapData.atlasExtrude) extrude(textureBitmapData.textureRect);
 		}
 		private function extrude(targetRect:Rectangle):void {
 			const copyRect:Rectangle = Pool.getRectangle(targetRect.left,targetRect.top,targetRect.width,1);
