@@ -57,6 +57,10 @@ package starlingEx.display {
 		}
 		public function get fixedW():Number {return _fixedW;}
 		public function get fixedH():Number {return _fixedH;}
+		public function reset():void {
+			_fixedW = _fixedH = NaN;
+			assignTextureEx(null);
+		}
 		override public function dispose():void {
 			assignTextureEx(null);
 			super.dispose();
