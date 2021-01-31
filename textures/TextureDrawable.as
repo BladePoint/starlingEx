@@ -21,7 +21,7 @@ package starlingEx.textures {
 			DRAWABLE_CHANGED_CONTENTS:String = "drawableChangedContents";
 		static public const transparentGreenHex:uint = 0x0000ff00;
 		static public function newBitmapData(w:uint,h:uint):BitmapData {
-			return new BitmapData(w,h,false,transparentGreenHex);
+			return new BitmapData(w,h,true,transparentGreenHex);
 		}
 		static private var whiteTransform:ColorTransform;
 		static public function applyWhiteTransform(bitmapData:BitmapData,targetRect:Rectangle):void {
