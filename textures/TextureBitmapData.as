@@ -65,7 +65,6 @@ package starlingEx.textures {
 			const sourceRect:Rectangle = Pool.getRectangle();
 			var copyFromBMD:BitmapData;
 			const targetPoint:Point = Pool.getPoint(atlasRect.x,atlasRect.y);
-			var offset:uint;
 			const texturePaddingX2:uint = texturePadding * 2;
 			if (bitmapData) {
 				copyFromBMD = bitmapData;
@@ -79,15 +78,13 @@ package starlingEx.textures {
 				sourceRect.width = sourceW;
 				sourceRect.height = sourceH;
 			}
-			if (atlasPadding > 0) offset += atlasPadding;
-			if (atlasExtrude) offset += 1;
-			targetPoint.x += texturePadding + offset;
-			targetPoint.y += texturePadding + offset;
+			targetPoint.x += texturePadding + textureOffset;
+			targetPoint.y += texturePadding + textureOffset;
 			targetBMD.copyPixels(copyFromBMD,sourceRect,targetPoint);
-			atlasRect.x += offset;
-			atlasRect.y += offset;
-			atlasRect.width = sourceW + texturePaddingX2;
-			atlasRect.height = sourceH + texturePaddingX2;
+			textureRect.x = atlasRect.x + textureOffset;
+			textureRect.y = atlasRect.y + textureOffset;
+			textureRect.width = sourceW + texturePaddingX2;
+			textureRect.height = sourceH + texturePaddingX2;
 			Pool.putRectangle(sourceRect);
 			Pool.putPoint(targetPoint);
 		}
