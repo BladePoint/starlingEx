@@ -244,7 +244,7 @@ package starlingEx.text {
 			if (charQuad) {
 				if (charQuad is QuadDrawable) {
 					const quadDrawable:QuadDrawable = charQuad as QuadDrawable;
-					quadDrawable.assignTextureEx(null);
+					quadDrawable.reset();
 				} else charQuad.texture = null;
 				charQuad.alignPivot(Align.LEFT,Align.TOP);
 				charQuad.skewX = 0;
