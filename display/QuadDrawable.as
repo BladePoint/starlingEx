@@ -13,6 +13,7 @@ package starlingEx.display {
 	public class QuadDrawable extends QuadEx {
 
 		private var _textureDrawable:TextureDrawable;
+		private var _fixedW:Number, _fixedH:Number;
 		public function QuadDrawable(textureDrawable:TextureDrawable=null) {
 			super(textureDrawable);
 			onRemovedFromStage();
@@ -39,11 +40,23 @@ package starlingEx.display {
 		}
 		public function demandTexture(evt:Event=null):void {
 			texture = _textureDrawable.texture;
-			readjustSize(_textureDrawable.quadW,_textureDrawable.quadH);
+			var w:Number, h:Number;
+			if (!isNaN(_fixedW)) w = _fixedW;
+			else w = _textureDrawable.quadW;
+			if (!isNaN(_fixedH)) h = _fixedH;
+			else h = _textureDrawable.quadH;
+			readjustSize(w,h);
 		}
 		public function get textureDrawable():TextureDrawable {
 			return _textureDrawable;
 		}
+		override public function readjustSize(width:Number=-1,height:Number=-1):void {
+			if (width != -1) _fixedW = width;
+			if (height != -1) _fixedH = height;
+			super.readjustSize(width,height);
+		}
+		public function get fixedW():Number {return _fixedW;}
+		public function get fixedH():Number {return _fixedH;}
 		override public function dispose():void {
 			assignTextureEx(null);
 			super.dispose();
