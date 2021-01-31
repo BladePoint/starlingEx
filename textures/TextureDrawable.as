@@ -9,12 +9,10 @@ package starlingEx.textures {
 	import flash.display.IBitmapDrawable;
 	import flash.geom.ColorTransform;
 	import flash.geom.Rectangle;
-	
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 	import starling.textures.Texture;
 	import starling.utils.Pool;
-	
 	import starlingEx.textures.DynamicAtlas;
 	import starlingEx.textures.ITextureEx;
 
@@ -23,7 +21,7 @@ package starlingEx.textures {
 			DRAWABLE_CHANGED_CONTENTS:String = "drawableChangedContents";
 		static public const transparentGreenHex:uint = 0x0000ff00;
 		static public function newBitmapData(w:uint,h:uint):BitmapData {
-			return new BitmapData(w,h,true,transparentGreenHex);
+			return new BitmapData(w,h,false,transparentGreenHex);
 		}
 		static private var whiteTransform:ColorTransform;
 		static public function applyWhiteTransform(bitmapData:BitmapData,targetRect:Rectangle):void {
@@ -32,14 +30,15 @@ package starlingEx.textures {
 		}
 		static public const sourceAreaError:String = "Source area cannot be outside original area.";
 
-		public var atlasPadding:int; //Width of transparent padding to be added around the texture in the atlas. An atlasPadding is necessary to prevent textures from bleeding into one another. Default value of 0 pads the bottom and right sides by one pixel. Set to -1 to remove atlas padding.
 		public var whiteFill:Boolean, //Create a white silhouette version.
 			mipMapping:Boolean; //If a dynamic atlas is in use, the atlas's mipmap settings will be used
-		internal var atlasRect:Rectangle;
+		internal var atlasRect:Rectangle, textureRect:Rectangle;
 		protected var _sourceX:Number, _sourceY:Number, cropW:Number, cropH:Number, originalW:Number, originalH:Number,
 			_textureMultiplier:Number;
+		protected var textureOffset:uint;
 		protected var bitmapData:BitmapData;
 		private var _texturePadding:uint, _textureWidth:uint, _textureHeight:uint;
+		private var _atlasPadding:int; //Width of transparent padding to be added around the texture in the atlas. An atlasPadding is necessary to prevent textures from bleeding into one another. Default value of 0 pads the bottom and right sides by one pixel. Set to -1 to remove atlas padding.
 		private var _atlasExtrude:Boolean;
 		private var drawnTexture:Texture, dynamicAtlasTexture:Texture;
 		private var dynamicAtlas:DynamicAtlas;
@@ -51,6 +50,7 @@ package starlingEx.textures {
 			setOriginalDimensions(iBitmapDrawable);
 			this._textureMultiplier = textureMultiplier;
 			atlasRect = Pool.getRectangle();
+			textureRect = Pool.getRectangle();
 		}
 		protected function setOriginalDimensions(iBitmapDrawable:IBitmapDrawable):void {
 			calcTextureDimensions();
@@ -82,13 +82,26 @@ package starlingEx.textures {
 			calcTextureDimensions();
 		}
 		public function get texturePadding():uint {return _texturePadding;}
+		public function set atlasPadding(value:uint):void {
+			_atlasPadding = value;
+			calcTextureOffset();
+		}
+		public function get atlasPadding():uint {
+			return _atlasPadding;
+		}
 		/* Adds a 1 pixel extrusion around the texture that is colored to match the nearest pixel in the atlas. Set atlasExtrude to true if the
-		   edge of the texture incorrectly appears transparent. */
+		edge of the texture incorrectly appears transparent. */
 		public function set atlasExtrude(boolean:Boolean):void {
 			if (boolean) _texturePadding = 0;
 			_atlasExtrude = boolean;
+			calcTextureOffset();
 		}
 		public function get atlasExtrude():Boolean {return _atlasExtrude;}
+		private function calcTextureOffset():void {
+			if (_atlasPadding > 0) textureOffset = atlasPadding;
+			else textureOffset = 0;
+			if (_atlasExtrude) textureOffset += 1;
+		}
 		private function calcTextureDimensions():void {
 			_textureWidth = Math.ceil(sourceW) + _texturePadding*2;
 			_textureHeight = Math.ceil(sourceH) + _texturePadding*2;
@@ -99,7 +112,7 @@ package starlingEx.textures {
 			var returnTexture:Texture;
 			if (dynamicAtlas) {
 				if (dynamicAtlasTexture) returnTexture = dynamicAtlasTexture;
-				else dynamicAtlasTexture = returnTexture = Texture.fromTexture(dynamicAtlas.texture,atlasRect);
+				else dynamicAtlasTexture = returnTexture = Texture.fromTexture(dynamicAtlas.texture,textureRect);
 			} else {
 				if (drawnTexture == null) drawTexture();
 				returnTexture = drawnTexture;
@@ -153,10 +166,11 @@ package starlingEx.textures {
 			atlasPadding = 0;
 			whiteFill = mipMapping = _atlasExtrude = false;
 			Pool.putRectangle(atlasRect);
-			atlasRect = null;
+			Pool.putRectangle(textureRect);
+			atlasRect = textureRect = null;
 			_sourceX = _sourceY = 0;
 			disposeBitmapData();
-			_texturePadding = _textureWidth = _textureHeight = 0;
+			_texturePadding = textureOffset = _textureWidth = _textureHeight = 0;
 			disposeDrawnTexture();
 			if (dynamicAtlasTexture) {
 				dynamicAtlasTexture.dispose();
