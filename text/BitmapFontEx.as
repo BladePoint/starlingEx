@@ -66,12 +66,22 @@ package starlingEx.text {
 			init(characters);
 		}
 		private function init(characters:String=""):void {
-			_characters = characters;
+			removeDuplicateCharacters(characters);
 			_offsetX = _offsetY = _padding = 0.0;
 			addMissing();
 			addQuadless();
 			charQuadA = PoolEx.getArray();
 			lineQuadA = PoolEx.getArray();
+		}
+		private function removeDuplicateCharacters(characters:String):void {
+			const array:Array = PoolEx.getArray();
+			var l:uint = characters.length;
+			for (var i:uint=0; i<l; i++) {
+				const character:String = characters.charAt(i);
+				if (array.indexOf(character) == -1) array[array.length] = character;
+			}
+			_characters = array.join();
+			PoolEx.putArray(array);
 		}
 		private function addMissing():void {
 			addChar(Compositor.CHAR_MISSING,BitmapCharEx.getInstance(this,Compositor.CHAR_MISSING,0,0,0));
@@ -237,7 +247,6 @@ package starlingEx.text {
 					quadDrawable.assignTextureEx(char.textureBitmapData);
 				} else charQuad.texture = char.texture;
 			}
-			charQuad.touchable = false;
 			return charQuad;
 		}
 		public function putCharQuad(charQuad:ApertureQuad):void {
@@ -272,7 +281,6 @@ package starlingEx.text {
 				lineQuad = lineQuadA.pop();
 				lineQuad.readjustSize(w,h);
 			}
-			lineQuad.touchable = false;
 			return lineQuad;
 		}
 		public function putLineQuad(lineQuad:ApertureQuad):void {
