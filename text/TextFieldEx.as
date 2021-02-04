@@ -65,6 +65,7 @@ package starlingEx.text {
 		static private const sMatrix:Matrix = Pool.getMatrix();
 		static private const maxUint:uint = uint.MAX_VALUE;
 		
+		public var forceTouchable:Boolean;
 		private var _text:String;
 		private var _format:TextFormatEx;
 		private var _options:TextOptionsEx;
@@ -283,7 +284,10 @@ package starlingEx.text {
 					text_AS.addChild(textLink);
 				}
 				touchable = true;
-			} else touchable = false;
+			} else {
+				if (forceTouchable) touchable = true;
+				else touchable = false;
+			}
 			PoolEx.putArray(linkFunctionA);
 			linkFunctionA = null;
 		}
@@ -503,6 +507,11 @@ package starlingEx.text {
 		public function get options():TextOptionsEx {return _options;}
 		public function get wordWrap():Boolean {return _options.wordWrap;}
 		public function set wordWrap(value:Boolean):void {_options.wordWrap = value;}
+		public override function getBounds(targetSpace:DisplayObject,out:Rectangle=null):Rectangle {
+			if (requiresRecomposition) recompose();
+			getTransformationMatrix(targetSpace,sMatrix);
+			return RectangleUtil.getBounds(_hitArea,sMatrix,out);
+		}
 		private function disposeTextBounds():void {
 			Pool.putRectangle(_textBounds);
 			_textBounds = null;
