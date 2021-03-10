@@ -5,14 +5,11 @@
 
 package starlingEx.display {
 
-	import starling.display.DisplayObject;
-	import starlingEx.display.ApertureObject;
-
-	public interface IApertureDisplayObjectContainer {
-		function getMultHex():uint;
-		function getMultRGB():Array;
-		function getMultAO():ApertureObject;
-		function addChild(child:DisplayObject):DisplayObject;
+	public interface IApertureMesh {
+		function applyVertexMult(vertexID:uint):void;
+		function set color(value:uint):void;
+		function get color():uint;
+		function setVertexColor(vertexID:int,colorHex:uint):void;
 	}
 
 }
