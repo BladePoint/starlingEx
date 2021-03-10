@@ -136,7 +136,7 @@ package starlingEx.utils {
 				Pool.putPoint3D(vector3D);
 				outsideContainer.x = container.width;
 				outsideContainer.y = container.height;
-				sortNotPacked();
+				sort(notPackedA);
 				updateDictionary(notPackedA);
 			} else if (container.width <= container.height && container.width < _maxContainerLength) {
 				container.width = nextLength(container.width+1,_maxContainerLength);
@@ -156,8 +156,8 @@ package starlingEx.utils {
 				vector3D.y = MathUtil.max(vector3D.y,rect.height);
 			}
 		}
-		protected function sortNotPacked():void {
-			notPackedA.sortOn("height",Array.NUMERIC);
+		protected function sort(array:Array):void {
+			array.sortOn("height",Array.NUMERIC);
 		}
 		public function get containerW():uint {return container.width;}
 		public function get containerH():uint {return container.height;}
@@ -342,6 +342,7 @@ package starlingEx.utils {
 		}
 		public function morePackedToPacked():void {
 			while (morePackedA.length > 0) packedA[packedA.length] = morePackedA.pop();
+			updateDictionary(packedA);
 		}
 		public function repack():void {
 			
