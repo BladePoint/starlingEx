@@ -14,12 +14,11 @@ package starlingEx.display {
 
 		private var _textureDrawable:TextureDrawable;
 		private var _fixedW:Number, _fixedH:Number;
-		public function QuadDrawable(textureDrawable:TextureDrawable=null) {
+		public function QuadDrawable(textureDrawable:TextureDrawable) {
 			super(textureDrawable);
 			onRemovedFromStage();
 		}
 		override public function assignTextureEx(iTextureEx:ITextureEx):void {
-			this.iTextureEx = iTextureEx;
 			if (_textureDrawable) {
 				_textureDrawable.removeEventListener(Event.CHANGE,demandTexture);
 				_textureDrawable = null;
