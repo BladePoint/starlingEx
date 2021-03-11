@@ -71,6 +71,11 @@ package starlingEx.display {
 			ApertureUtils.multiplyChild(child);
 			return child;
 		}
+		override public function addChildAt(child:DisplayObject,index:int):DisplayObject {
+			super.addChildAt(child,index);
+			ApertureUtils.multiplyChild(child);
+			return child;
+		}
 		override public function dispose():void {
 			ApertureObject.putInstance(true_AO);
 			ApertureObject.putInstance(mult_AO);
