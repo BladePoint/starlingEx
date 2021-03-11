@@ -23,18 +23,19 @@ package starlingEx.display {
 		protected var triggerBounds:Rectangle;
 		protected var hover:Boolean;
 		public function ButtonEx(displayObject:DisplayObject,clickFunction:Function) {
+			useHandCursor = true;
+			init(displayObject,clickFunction);
+			removedFromStage();
+		}
+		private function init(displayObject:DisplayObject,clickFunction:Function):void {
 			this.displayObject = displayObject;
 			this.clickFunction = clickFunction;
 			addChild(displayObject);
-			useHandCursor = true;
-			initTriggerBounds();
-			removedFromStage();
-		}
-		protected function initTriggerBounds():void {
 			triggerBounds = Pool.getRectangle();
 		}
 		protected function removedFromStage(evt:Event=null):void {
 			removeEventListener(Event.REMOVED_FROM_STAGE,removedFromStage);
+			disableTouch();
 			addEventListener(Event.ADDED_TO_STAGE,addedToStage);
 		}
 		protected function addedToStage(evt:Event):void {
@@ -63,6 +64,7 @@ package starlingEx.display {
 				else if (touch.phase == TouchPhase.BEGAN && hover) mouseDown(evt,touch);
 				else if (touch.phase == TouchPhase.MOVED) mouseMove(touch);
 				else if (touch.phase == TouchPhase.ENDED && hover) mouseUp(touch);
+				else if (touch.phase == TouchPhase.ENDED && !hover) mouseUpCancelMethod();
 			}
 		}
 		private function mouseOut():void {
@@ -86,25 +88,34 @@ package starlingEx.display {
 		protected function mouseDown(touchEvent:TouchEvent,touch:Touch):void {
 			const displayObject:DisplayObject = touchEvent.target as DisplayObject;
 			displayObject.getBounds(stage,triggerBounds);
+			mouseDownMethod();
 		}
+		protected function mouseDownMethod():void {}
 		private function mouseUp(touch:Touch):void {
-			if (touch.cancelled) return;
-			else {
+			if (touch.cancelled) {
+				mouseUpCancelMethod();
+				return;
+			} else {
 				mouseUpMethod();
 				if (clickFunction != null) clickFunction();
 				if (disableOnClick) disableTouch();
 			}
 		}
+		protected function mouseUpCancelMethod():void {}
 		protected function mouseUpMethod():void {}
-		override public function dispose():void {
-			removeEventListener(Event.REMOVED_FROM_STAGE,removedFromStage);
-			removeEventListener(Event.ADDED_TO_STAGE,addedToStage);
-			removeEventListener(TouchEvent.TOUCH,onTouch);
+		protected function reset():void {
 			clickFunction = null;
+			enableOnAdd = disableOnClick = true;
 			removeChild(displayObject);
 			displayObject = null;
 			Pool.putRectangle(triggerBounds);
 			triggerBounds = null;
+		}
+		override public function dispose():void {
+			reset();
+			removeEventListener(Event.REMOVED_FROM_STAGE,removedFromStage);
+			removeEventListener(Event.ADDED_TO_STAGE,addedToStage);
+			removeEventListener(TouchEvent.TOUCH,onTouch);
 			super.dispose();
 		}
 	}
