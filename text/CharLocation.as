@@ -11,7 +11,6 @@ package starlingEx.text {
 	import starling.utils.Align;
 	import starling.utils.MathUtil;
 	import starlingEx.display.ApertureQuad;
-	import starlingEx.display.QuadDrawable;
 	import starlingEx.styles.ApertureDistanceFieldStyle;
 	import starlingEx.text.BitmapCharEx;
 	import starlingEx.text.IFont;
@@ -70,7 +69,7 @@ package starlingEx.text {
 		}
 		static private function getOuterH(charLocation:CharLocation,innerH:uint):uint {
 			var outlineRatio:Number;
-			const charQuad:QuadDrawable = charLocation._quad; 
+			const charQuad:ApertureQuad = charLocation._quad; 
 			if (charQuad) {
 				if (charQuad.style is DistanceFieldStyle) {
 					const dfs:DistanceFieldStyle = charQuad.style as DistanceFieldStyle;
@@ -99,7 +98,7 @@ package starlingEx.text {
 			return outerH;
 		}
 		static private function getUnderlineOffsetY(outerH:uint,innerH:uint):uint {
-			return Math.max(0,(outerH-innerH)*.5);
+			return MathUtil.max(0,(outerH-innerH)*.5);
 		}
 		static private function getInnerLine(iFont:IFont,innerH:uint,baseY:Number,charLocation:CharLocation,x:Number):ApertureQuad {
 			const inner_AQ:ApertureQuad = iFont.getLineQuad(1,innerH);
@@ -186,7 +185,7 @@ package starlingEx.text {
 		internal var textLink:TextLink;
 		private var textFormat:TextFormatEx;
 		private var tagObject:TagObject;
-		private var _quad:QuadDrawable, _shadowQuad:QuadDrawable;
+		private var _quad:ApertureQuad, _shadowQuad:ApertureQuad;
 		public function CharLocation(char:BitmapCharEx,textFormat:TextFormatEx,tagObject:TagObject) {
 			init(char,textFormat,tagObject);
 		}
@@ -197,7 +196,7 @@ package starlingEx.text {
 		}
 		internal function initQuad():void {
 			const iFont:IFont = char.font;
-			_quad = iFont.getCharQuad(char.textureBitmapData);
+			_quad = iFont.getCharQuad(char);
 			_quad.readjustSize();
 			_quad.x = x;
 			_quad.y = y;
@@ -503,7 +502,7 @@ package starlingEx.text {
 		public function initShadow():void {
 			if (_quad) {
 				const iFont:IFont = char.font;
-				_shadowQuad = iFont.getCharQuad(_quad.textureDrawable);
+				_shadowQuad = iFont.getCharQuad(char);
 				_shadowQuad.texture = _quad.texture;
 				if (_quad.style is ApertureDistanceFieldStyle) {
 					const shadow_ADFS:ApertureDistanceFieldStyle = _shadowQuad.style as ApertureDistanceFieldStyle,
@@ -544,10 +543,10 @@ package starlingEx.text {
 				}
 			}
 		}
-		public function get quad():QuadDrawable {
+		public function get quad():ApertureQuad {
 			return _quad;
 		}
-		public function get shadowQuad():QuadDrawable {
+		public function get shadowQuad():ApertureQuad {
 			return _shadowQuad;
 		}
 		public function reset():void {
