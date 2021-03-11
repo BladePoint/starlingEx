@@ -24,6 +24,7 @@ package starlingEx.text {
 
 	/* Compositor arranges the letters in a TextFieldEx. */
 	public class Compositor {
+		static public const ALPHA_NUMERIC:String = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz 0123456789";
 		static public const defaultItalicRadians:Number = 0.2617993877991494, //15 degrees
 			defaultSinItalicRadians:Number = 0.25881904510252074, 
 			defaultThreshold:Number = .5,
@@ -199,7 +200,7 @@ package starlingEx.text {
 							lastWhiteSpace = i;
 							bitmapChar = testID(iFont,charID,text,i);
 						} else bitmapChar = testID(iFont,charID,text,i);
-						if (kerning) currentX += bitmapChar.getKerning(lastCharID);
+						if (kerning) currentX += bitmapChar.getKerning(lastCharID) * tagScale;
 						current_CL = CharLocation.getInstance(bitmapChar,textFormat,tagObject);
 						current_CL.x = currentX + bitmapChar.xOffset * tagScale;
 						current_CL.y = currentY + bitmapChar.yOffset * tagScale + formatFontLineHeight * (1-tagScale) * getBaselineProportion(iFont);
