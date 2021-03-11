@@ -7,6 +7,7 @@ package starlingEx.animation {
 
 	import starling.animation.Tween;
 	import starlingEx.animation.TweenObject;
+	import starlingEx.utils.PoolEx;
 
 	/* A Tween extension that allows pooling and easy tweening of numbers without having to create an object. */
 	public class TweenEx extends Tween {
@@ -21,6 +22,10 @@ package starlingEx.animation {
 		}
 		static public function putInstance(tween:TweenEx):void {
 			if (tween) {
+				PoolEx.putArray(tween.onStartArgs);
+				PoolEx.putArray(tween.onUpdateArgs);
+				PoolEx.putArray(tween.onRepeatArgs);
+				PoolEx.putArray(tween.onCompleteArgs);
 				tween.reset(null,0);
 				instancePool[instancePool.length] = tween;
 			}
