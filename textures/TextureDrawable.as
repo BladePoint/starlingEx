@@ -157,10 +157,10 @@ package starlingEx.textures {
 			}
 		}
 		public function get quadW():Number {
-			return textureWidth * textureMultiplier;
+			return _textureWidth * _textureMultiplier;
 		}
 		public function get quadH():Number {
-			return textureHeight * textureMultiplier;
+			return _textureHeight * _textureMultiplier;
 		}
 		internal function reset():void {
 			atlasPadding = 0;
