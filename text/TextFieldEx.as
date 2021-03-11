@@ -475,9 +475,6 @@ package starlingEx.text {
 				}
 			}
 		}
-		override public function multiplyColor():void {
-			super.multiplyColor();
-		}
 		public function getCharLocationAt(index:uint):CharLocation {
 			var charLocation:CharLocation;
 			if (charLocationV && index < charLocationV.length) charLocation = charLocationV[index];
@@ -576,6 +573,7 @@ package starlingEx.text {
 			}
 			disposeBorder();
 			removeEventListeners();
+			transformationMatrix.identity();
 		}
 		public override function dispose():void {
 			reset();
