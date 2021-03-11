@@ -79,13 +79,23 @@ package starlingEx.display {
 				initB:uint = Color.getBlue(initHex);
 			const tween:TweenEx = TweenEx.getInstance(0,duration,transition);
 			tween.animateEx(1);
-			const updateA:Array = PoolEx.getArray(),
-				completeA:Array = PoolEx.getArray();
 			tween.onUpdate = updateTween;
-			updateA.push(iAperture,tween,initR,initG,initB,finalR,finalG,finalB);
+			const updateA:Array = PoolEx.getArray();
+			updateA[0] = iAperture;
+			updateA[1] = tween;
+			updateA[2] = initR;
+			updateA[3] = initG;
+			updateA[4] = initB;
+			updateA[5] = finalR;
+			updateA[6] = finalG;
+			updateA[7] = finalB;
 			tween.onUpdateArgs = updateA;
 			tween.onComplete = completeTween;
-			completeA.push(tween,updateA,completeA,onComplete,onCompleteDelay,juggler);
+			const completeA:Array = PoolEx.getArray();
+			completeA[0] = tween;
+			completeA[1] = onComplete;
+			completeA[2] = onCompleteDelay;
+			completeA[3] = juggler;
 			tween.onCompleteArgs = completeA;
 			juggler.add(tween);
 		}
@@ -96,10 +106,8 @@ package starlingEx.display {
 				b:uint = Math.round(initB*complement+finalB*tween.t);
 			iAperture.setRGB(r,g,b);
 		}
-		static private function completeTween(tween:TweenEx,updateA:Array,completeA:Array,onComplete:Function,delay:Number,juggler:Juggler):void {
+		static private function completeTween(tween:TweenEx,onComplete:Function,delay:Number,juggler:Juggler):void {
 			TweenEx.putInstance(tween);
-			PoolEx.putArray(updateA);
-			PoolEx.putArray(completeA);
 			if (onComplete != null) juggler.delayCall(onComplete,delay);
 		}
 		static public function fadeToBlack(iAperture:IAperture,duration:Number=1,onComplete:Function=null,onCompleteDelay:Number=0):void {
