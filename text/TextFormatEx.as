@@ -166,6 +166,30 @@ package starlingEx.text {
 				dispatch(APERTURE_CHANGE,0xff000000);
 			}
 		}
+		public function set topColor(value:uint):void {
+			var dispatchColorB:Boolean;
+			if (_topLeftColor != value) {
+				_topLeftColor = value;
+				dispatchColorB = true;
+			}
+			if (_topRightColor != value) {
+				_topRightColor = value;
+				dispatchColorB = true;
+			}
+			if (dispatchColorB) dispatch(APERTURE_CHANGE,0xff000000);
+		}
+		public function set bottomColor(value:uint):void {
+			var dispatchColorB:Boolean;
+			if (_bottomLeftColor != value) {
+				_bottomLeftColor = value;
+				dispatchColorB = true;
+			}
+			if (_bottomRightColor != value) {
+				_bottomRightColor = value;
+				dispatchColorB = true;
+			}
+			if (dispatchColorB) dispatch(APERTURE_CHANGE,0xff000000);
+		}
 		public function setCornerColors(topLeftHex:uint,topRightHex:uint,bottomLeftHex:uint,bottomRightHex:uint,dispatchOnChange:Boolean=true):void {
 			var dispatchColorB:Boolean;
 			if (_topLeftColor != topLeftHex) {
